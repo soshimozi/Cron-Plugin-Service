@@ -14,5 +14,13 @@ namespace CronPluginService.Framework.Configuration
             get { return (CronServiceInstanceCollection)this[""]; }
             set { this[""] = value; }
         }
+
+        [ConfigurationProperty("PluginInfo", IsRequired = true)]
+        public CronServicePluginInfoCollection PluginInfo
+        {
+            get { return (CronServicePluginInfoCollection)this["PluginInfo"]; }
+            set { this["PluginInfo"] = value; }
+        }
+    
     }
 }
