@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using CronPluginService.Framework.Sheduling;
 using System.ComponentModel.Composition;
+using CronPluginService.Framework.Composition;
+using CronPluginService.Framework.Sheduling;
 
 namespace ServicePlugins
 {

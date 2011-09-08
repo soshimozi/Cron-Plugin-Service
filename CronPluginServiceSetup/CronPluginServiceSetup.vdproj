@@ -15,32 +15,20 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
+        "MsmKey" = "8:_4DA0644DB342B2FD3C5B4676A96A11EA"
         "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_35AAAE06569322C4D6EC045F965529C6"
-        "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_35AAAE06569322C4D6EC045F965529C6"
-        "OwnerKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_67D2E7072C6FFF024FDDC17D9C2DD676"
-        "OwnerKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_67D2E7072C6FFF024FDDC17D9C2DD676"
         "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_67D2E7072C6FFF024FDDC17D9C2DD676"
+        "OwnerKey" = "8:_85F0CAE5E997851BEA5E998DD011CA57"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -51,8 +39,26 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_85F0CAE5E997851BEA5E998DD011CA57"
+        "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A3CF2F7FCF884A908B5F56DED6F073A4"
+        "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_C668C55BC312720C2DF428B6E6A2A8AB"
         "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_C668C55BC312720C2DF428B6E6A2A8AB"
+        "OwnerKey" = "8:_4DA0644DB342B2FD3C5B4676A96A11EA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -76,7 +82,19 @@
         "Entry"
         {
         "MsmKey" = "8:_FDF522BDAC6FA6EFC9DDEA03C2C80C7E"
-        "OwnerKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
+        "OwnerKey" = "8:_4DA0644DB342B2FD3C5B4676A96A11EA"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FDF522BDAC6FA6EFC9DDEA03C2C80C7E"
+        "OwnerKey" = "8:_85F0CAE5E997851BEA5E998DD011CA57"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A3CF2F7FCF884A908B5F56DED6F073A4"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -88,13 +106,13 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_35AAAE06569322C4D6EC045F965529C6"
+        "OwnerKey" = "8:_4DA0644DB342B2FD3C5B4676A96A11EA"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
+        "OwnerKey" = "8:_85F0CAE5E997851BEA5E998DD011CA57"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -146,19 +164,6 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
-                "Items"
-                {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
-                    {
-                    "Name" = "8:.NET Framework 3.5 SP1"
-                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
-                    }
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
-                    {
-                    "Name" = "8:Windows Installer 3.1"
-                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
-                    }
-                }
             }
         }
         "Release"
@@ -183,19 +188,6 @@
             "PrerequisitesLocation" = "2:1"
             "Url" = "8:"
             "ComponentsUrl" = "8:"
-                "Items"
-                {
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Net.Framework.3.5.SP1"
-                    {
-                    "Name" = "8:.NET Framework 3.5 SP1"
-                    "ProductCode" = "8:Microsoft.Net.Framework.3.5.SP1"
-                    }
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Windows.Installer.3.1"
-                    {
-                    "Name" = "8:Windows Installer 3.1"
-                    "ProductCode" = "8:Microsoft.Windows.Installer.3.1"
-                    }
-                }
             }
         }
     }
@@ -240,9 +232,23 @@
             "InstallAction" = "3:2"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
-            "Sequence" = "3:1"
+            "Sequence" = "3:2"
             "Identifier" = "8:_0592E9A3_E9E3_4F0E_9D98_5D1417773011"
             "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_CC93F26A348D46548AC0ED8E626E3BE4"
+            {
+            "Name" = "8:ProtectAppConfig.exe"
+            "Condition" = "8:"
+            "Object" = "8:_A3CF2F7FCF884A908B5F56DED6F073A4"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:\"[TARGETDIR]\\CronPluginService.exe\""
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_5472CED6_76B5_4CA9_9E62_D9B703715045"
+            "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
             "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_D10D432AF7334245A1D8F3A3E5CB1018"
@@ -282,51 +288,20 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_18A056E6F7BCE3027B7085F48811EDAF"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_4DA0644DB342B2FD3C5B4676A96A11EA"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:CronPluginService.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:MyReportModule, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_18A056E6F7BCE3027B7085F48811EDAF"
+                    "_4DA0644DB342B2FD3C5B4676A96A11EA"
                     {
-                    "Name" = "8:CronPluginService.Framework.dll"
+                    "Name" = "8:MyReportModule.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:CronPluginService.Framework.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_8D0C1C2EE5C54D83BB686B029B2D20BF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_35AAAE06569322C4D6EC045F965529C6"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.ComponentModel.Composition, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_35AAAE06569322C4D6EC045F965529C6"
-                    {
-                    "Name" = "8:System.ComponentModel.Composition.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:System.ComponentModel.Composition.dll"
+            "SourcePath" = "8:MyReportModule.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8D0C1C2EE5C54D83BB686B029B2D20BF"
@@ -373,6 +348,68 @@
             "Register" = "3:1"
             "Exclude" = "11:FALSE"
             "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_85F0CAE5E997851BEA5E998DD011CA57"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:CronPluginService.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_85F0CAE5E997851BEA5E998DD011CA57"
+                    {
+                    "Name" = "8:CronPluginService.Framework.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:CronPluginService.Framework.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_8D0C1C2EE5C54D83BB686B029B2D20BF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A3CF2F7FCF884A908B5F56DED6F073A4"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ProtectAppConfig, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_A3CF2F7FCF884A908B5F56DED6F073A4"
+                    {
+                    "Name" = "8:ProtectAppConfig.exe"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:..\\..\\ProtectAppConfig\\ProtectAppConfig\\bin\\Debug\\ProtectAppConfig.exe"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_8D0C1C2EE5C54D83BB686B029B2D20BF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
             "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_C668C55BC312720C2DF428B6E6A2A8AB"
