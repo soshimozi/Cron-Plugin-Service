@@ -8,12 +8,12 @@ using System.ComponentModel.Composition.Hosting;
 using System.Reflection;
 using CronPluginService.Framework.Scheduling;
 
-namespace CronPluginService.Framework.Composition
+namespace CronPluginService.Framework.Plugin
 {
-    public class ScheduledJobRepository : SingletonBase<ScheduledJobRepository>
+    public class PluginRepository : SingletonBase<PluginRepository>
     {
         [ImportMany]
-        private IEnumerable<Lazy<IScheduledJob, IScheduledJobMetaData>> _scheduledJobs;
+        private IEnumerable<Lazy<IPluginJob, IPluginMetaData>> _scheduledJobs;
 
         public void LoadPlugins(string [] directories)
         {
@@ -53,7 +53,7 @@ namespace CronPluginService.Framework.Composition
                         select lz.Value;
 
 
-            IScheduledJob job = query.FirstOrDefault();
+            IPluginJob job = query.FirstOrDefault();
             return job == null ? null : job.GetType();
         }
     }

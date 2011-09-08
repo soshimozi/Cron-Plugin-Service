@@ -67,13 +67,13 @@
     <Compile Include="Configuration\CronServiceInstanceElement.cs" />
     <Compile Include="Configuration\CronServicePluginInfoCollection.cs" />
     <Compile Include="Configuration\CronServicePluginInstanceElement.cs" />
+    <Compile Include="Plugin\PluginBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Scheduling\IScheduledJob.cs" />
-    <Compile Include="Composition\IScheduledJobMetaData.cs" />
-    <Compile Include="Scheduling\JobContext.cs" />
-    <Compile Include="Composition\ScheduledJobMetaData.cs" />
-    <Compile Include="Composition\ScheduledJobRepository.cs" />
-    <Compile Include="Scheduling\ScheduledJobBase.cs" />
+    <Compile Include="Plugin\IPluginJob.cs" />
+    <Compile Include="Plugin\IPluginMetaData.cs" />
+    <Compile Include="Plugin\PluginContext.cs" />
+    <Compile Include="Plugin\PluginMetaData.cs" />
+    <Compile Include="Plugin\PluginRepository.cs" />
     <Compile Include="Scheduling\SchedulerFactory.cs" />
     <Compile Include="Scheduling\SchedulerManager.cs" />
     <Compile Include="Utility\SingletonBase.cs" />
@@ -87,4 +87,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <PropertyGroup>
+    <PostBuildEvent>copy  "$(TargetPath)" "$(SolutionDir)\Referenced Assemblies"</PostBuildEvent>
+  </PropertyGroup>
 </Project>

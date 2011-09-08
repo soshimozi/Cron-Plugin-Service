@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.ComponentModel.Composition;
-using CronPluginService.Framework.Composition;
+using CronPluginService.Framework.Plugin;
 using CronPluginService.Framework.Scheduling;
 using System.Diagnostics;
 
 namespace ServicePlugins
 {
-    [Export(typeof(IScheduledJob))]
-    [ScheduledJobMetaData(JobKey="TestPlugin-Mod")]
-    public class TestPlugin : ScheduledJobBase
+    [PluginMetaData(JobKey="TestPlugin")]
+    public class TestPlugin : PluginBase
     {
         #region IScheduledJob Members
 
-        public override void Execute(JobContext context)
+        public override void Execute(PluginContext context)
         {
-            Debug.WriteLine("Inside TestPlugin.Execute Mod 2");
+            Debug.WriteLine("Inside TestPlugin.Execute");
         }
 
         #endregion

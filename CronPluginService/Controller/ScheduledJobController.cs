@@ -7,7 +7,7 @@ using System.Reflection;
 using Quartz;
 using CronPluginService.Framework.Configuration;
 using CronPluginService.Framework.Scheduling;
-using CronPluginService.Framework.Composition;
+using CronPluginService.Framework.Plugin;
 
 namespace CronPluginService.Controller
 {
@@ -42,7 +42,7 @@ namespace CronPluginService.Controller
                 }
 
                 // now do our DI
-                ScheduledJobRepository.Instance.LoadPlugins(directoryList.ToArray());
+                PluginRepository.Instance.LoadPlugins(directoryList.ToArray());
 
                 // for each item, create a new scheduler
                 foreach (CronServiceInstanceElement element in config.Instances)
@@ -57,7 +57,7 @@ namespace CronPluginService.Controller
                     if (handlerType == null)
                     {
                         // let's see if we can find our type in the DI collection
-                        handlerType = ScheduledJobRepository.Instance.GetTypeForJob(element.Name);
+                        handlerType = PluginRepository.Instance.GetTypeForJob(element.Name);
                     }
 
                     if( handlerType != null )

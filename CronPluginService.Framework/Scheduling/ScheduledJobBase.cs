@@ -7,9 +7,7 @@ using System.ComponentModel.Composition;
 
 namespace CronPluginService.Framework.Scheduling
 {
-    [Export(typeof(IScheduledJob))]
-    [InheritedExport(typeof(IScheduledJob))]
-    public abstract class ScheduledJobBase : IScheduledJob, IJob
+    public abstract class ScheduledJobBase : IPluginJob
     {
         #region IJob Members
 
