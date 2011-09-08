@@ -5,9 +5,9 @@ using System.Text;
 using System.Configuration;
 using System.Reflection;
 using Quartz;
-using CronPluginService.Framework.Service;
 using CronPluginService.Framework.Configuration;
 using CronPluginService.Framework.Scheduling;
+using CronPluginService.Framework.Plugin;
 
 namespace CronPluginService.Controller
 {
@@ -33,11 +33,21 @@ namespace CronPluginService.Controller
                 _schedulerManager.StopSchedulers();
                 _schedulerManager.RemoveAll();
 
+                List<string> directoryList = new List<string>();
+
+                // let's read the list of plugininfos
+                foreach (CronServicePluginInstanceElement plugin in config.PluginInfo)
+                {
+                    directoryList.Add(plugin.Path);
+                }
+
+                // now do our DI
+                PluginRepository.Instance.LoadPlugins(directoryList.ToArray());
+
                 // for each item, create a new scheduler
                 foreach (CronServiceInstanceElement element in config.Instances)
                 {
                     string cronExpression = element.Expression;
-                    string path = element.Path; 
 
                     // we could use path, load the assembly
                     // and get the type from the assembly,
@@ -46,9 +56,11 @@ namespace CronPluginService.Controller
                     Type handlerType = Type.GetType(element.TypeString, false);
                     if (handlerType == null)
                     {
-                        // TODO: handle where type string is invalid
+                        // let's see if we can find our type in the DI collection
+                        handlerType = PluginRepository.Instance.GetTypeForJob(element.Name);
                     }
-                    else
+
+                    if( handlerType != null )
                     {
                         IScheduler scheduler = SchedulerFactory.Instance.GetCronScheduler(cronExpression, handlerType);
                         _schedulerManager.AddScheduler(scheduler);

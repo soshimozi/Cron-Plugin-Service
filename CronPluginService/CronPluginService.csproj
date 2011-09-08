@@ -33,11 +33,11 @@
   <ItemGroup>
     <Reference Include="log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\dev\libs\log4net-1.2.10\bin\net\2.0\release\log4net.dll</HintPath>
+      <HintPath>..\Referenced Assemblies\log4net\log4net.dll</HintPath>
     </Reference>
     <Reference Include="Quartz, Version=1.0.3.3, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\..\..\dev\libs\Quartz.NET-1.0.3\bin\3.5\Release\Quartz\Quartz.dll</HintPath>
+      <HintPath>..\Referenced Assemblies\Quartz\Quartz.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.configuration" />
@@ -60,6 +60,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\ScheduledJobController.cs" />
+    <Compile Include="Data\ReportRepository.cs" />
+    <Compile Include="Data\SqlDataHelper.cs" />
+    <Compile Include="Data\StringExtension.cs" />
+    <Compile Include="Domain\ActivityReport.cs" />
+    <Compile Include="Domain\ActivityReportLine.cs" />
     <Compile Include="ServiceControlForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -67,7 +72,7 @@
       <DependentUpon>ServiceControlForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ServiceControllerFactory.cs" />
-    <Compile Include="ScheduledJob\GenerateManagementReportJob.cs" />
+    <Compile Include="Jobs\GenerateManagementReportJob.cs" />
     <Compile Include="CronPluginServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
@@ -83,6 +88,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="IServiceContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

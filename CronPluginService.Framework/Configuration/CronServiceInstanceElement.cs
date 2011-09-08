@@ -15,32 +15,18 @@ namespace CronPluginService.Framework.Configuration
             set { base["name"] = value; }
         }
 
-        [ConfigurationProperty("expression", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("expression", IsRequired = true)]
         public string Expression
         {
             get { return (string)base["expression"]; }
             set { base["expression"] = value; }
         }
 
-        [ConfigurationProperty("type", IsKey = false, IsRequired = true)]
+        [ConfigurationProperty("type", IsRequired = true)]
         public string TypeString
         {
             get { return (string)base["type"]; }
             set { base["type"] = value; }
-        }
-
-        [ConfigurationProperty("path", IsKey = false, IsRequired = false)]
-        public string Path
-        {
-            get { return (string)base["path"]; }
-            set { base["path"] = value; }
-        }
-
-        [ConfigurationProperty("isgac", IsKey = false, IsRequired = false)]
-        public bool IsGAC
-        {
-            get { return (bool)base["isgac"]; }
-            set { base["isgac"] = value; }
         }
     }
 }

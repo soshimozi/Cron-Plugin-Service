@@ -8,7 +8,6 @@ using System.ServiceProcess;
 using System.Text;
 using log4net;
 using System.Reflection;
-using CronPluginService.Framework.Service;
 
 namespace CronPluginService
 {

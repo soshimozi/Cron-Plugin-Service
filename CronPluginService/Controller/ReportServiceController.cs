@@ -5,9 +5,8 @@ using System.Text;
 using log4net;
 using System.Reflection;
 using Quartz;
-using CronPluginService.Framework.Service;
 using CronPluginService.Framework.Scheduling;
-using CronPluginService.ScheduledJob;
+using CronPluginService.Jobs;
 
 namespace CronPluginService.Controller
 {

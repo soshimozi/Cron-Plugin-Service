@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ManagementReporting
+namespace CronPluginService
 {
-    interface IServiceContext
+    public interface IServiceContext
     {
         void Start(string [] args);
         void Stop();

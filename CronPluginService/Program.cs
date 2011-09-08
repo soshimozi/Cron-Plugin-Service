@@ -4,7 +4,6 @@ using System.Linq;
 using System.ServiceProcess;
 using System.Text;
 using System.Threading;
-using CronPluginService.Framework.Service;
 using System.Windows.Forms;
 
 namespace CronPluginService
