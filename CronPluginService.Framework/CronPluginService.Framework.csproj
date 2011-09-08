@@ -73,6 +73,7 @@
     <Compile Include="Scheduling\JobContext.cs" />
     <Compile Include="Composition\ScheduledJobMetaData.cs" />
     <Compile Include="Composition\ScheduledJobRepository.cs" />
+    <Compile Include="Scheduling\ScheduledJobBase.cs" />
     <Compile Include="Scheduling\SchedulerFactory.cs" />
     <Compile Include="Scheduling\SchedulerManager.cs" />
     <Compile Include="Utility\SingletonBase.cs" />

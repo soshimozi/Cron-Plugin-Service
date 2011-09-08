@@ -15,7 +15,7 @@ namespace CronPluginService.Framework.Composition
         [ImportMany]
         private IEnumerable<Lazy<IScheduledJob, IScheduledJobMetaData>> _scheduledJobs;
 
-        public void LoadPlugins(string directory)
+        public void LoadPlugins(string [] directories)
         {
             var aggregateCatalog = new AggregateCatalog();
 
@@ -24,10 +24,14 @@ namespace CronPluginService.Framework.Composition
             // an assembly catalog to load information about parts from this assembly
             var assemblyCatalog = new AssemblyCatalog(executingAssembly);
 
-            if (!string.IsNullOrEmpty(directory))
+            foreach (string directory in directories)
             {
-                var directoryCatalog = new DirectoryCatalog(directory, "*.dll");
-                aggregateCatalog.Catalogs.Add(directoryCatalog);
+                if (!string.IsNullOrEmpty(directory))
+                {
+                    // search for dlls only in the specified directory
+                    var directoryCatalog = new DirectoryCatalog(directory, "*.dll");
+                    aggregateCatalog.Catalogs.Add(directoryCatalog);
+                }
             }
 
             aggregateCatalog.Catalogs.Add(assemblyCatalog);
@@ -35,13 +39,22 @@ namespace CronPluginService.Framework.Composition
             // create a container for our catalogs
             var container = new CompositionContainer(aggregateCatalog);
 
+            // clear old list, if any
+            _scheduledJobs = null;
+
             // finally, compose the parts
             container.ComposeParts(this);
         }
 
         public Type GetTypeForJob(string jobKey)
         {
-            throw new NotImplementedException();
+            var query = from lz in _scheduledJobs
+                        where lz.Metadata.JobKey.Equals(jobKey)
+                        select lz.Value;
+
+
+            IScheduledJob job = query.FirstOrDefault();
+            return job == null ? null : job.GetType();
         }
     }
 }
