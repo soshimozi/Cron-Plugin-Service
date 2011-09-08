@@ -5,7 +5,6 @@ using System.Text;
 using System.Configuration;
 using System.Reflection;
 using Quartz;
-using CronPluginService.Framework.Service;
 using CronPluginService.Framework.Configuration;
 using CronPluginService.Framework.Scheduling;
 

@@ -67,16 +67,14 @@
     <Compile Include="Configuration\CronServiceInstanceElement.cs" />
     <Compile Include="Configuration\CronServicePluginInfoCollection.cs" />
     <Compile Include="Configuration\CronServicePluginInstanceElement.cs" />
-    <Compile Include="Data\SqlDataHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Service\IServiceContext.cs" />
-    <Compile Include="Sheduling\IScheduledJob.cs" />
+    <Compile Include="Scheduling\IScheduledJob.cs" />
     <Compile Include="Composition\IScheduledJobMetaData.cs" />
-    <Compile Include="Sheduling\JobContext.cs" />
+    <Compile Include="Scheduling\JobContext.cs" />
     <Compile Include="Composition\ScheduledJobMetaData.cs" />
     <Compile Include="Composition\ScheduledJobRepository.cs" />
-    <Compile Include="Sheduling\SchedulerFactory.cs" />
-    <Compile Include="Sheduling\SchedulerManager.cs" />
+    <Compile Include="Scheduling\SchedulerFactory.cs" />
+    <Compile Include="Scheduling\SchedulerManager.cs" />
     <Compile Include="Utility\SingletonBase.cs" />
     <Compile Include="Utility\WorkbookHelper.cs" />
   </ItemGroup>

@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.ComponentModel.Composition;
 using CronPluginService.Framework.Composition;
-using CronPluginService.Framework.Sheduling;
+using CronPluginService.Framework.Scheduling;
 
 namespace ServicePlugins
 {

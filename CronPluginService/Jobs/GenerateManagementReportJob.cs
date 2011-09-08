@@ -7,12 +7,12 @@ using System.Reflection;
 using log4net;
 using System.IO;
 using System.Configuration;
-using System.Data.SqlClient;
-using CronPluginService.Framework.Data;
 using CronPluginService.Framework.Utility;
 using System.Data;
+using CronPluginService.Data;
+using CronPluginService.Domain;
 
-namespace CronPluginService.ScheduledJob
+namespace CronPluginService.Jobs
 {
     public class GenerateManagementReportJob : IJob
     {
@@ -35,8 +35,7 @@ namespace CronPluginService.ScheduledJob
             string connectionString =
                      ConfigurationManager.ConnectionStrings["ManagementReporting"].ConnectionString;
 
-            SqlDataReader reader =
-                   SqlDataHelper.ExecuteReader(connectionString, CommandType.Text, "SELECT * FROM v_ManagementReporting");
+            ActivityReport report = ReportRepository.Instance.GetActivityReport();
 
             // if we have a worksheet for this day already, remove it
             if (WorkbookHelper.IsWorksheetPresent(path, sheetName))
@@ -44,13 +43,18 @@ namespace CronPluginService.ScheduledJob
                 WorkbookHelper.DeleteWorksheet(path, sheetName);
             }
 
-            WorkbookHelper.AddColumnHeadersFromSqlDataReader(path, sheetName, reader);
-
-            uint row = 2;
-            while (reader.Read())
+            //WorkbookHelper.AddColumnHeadersFromSqlDataReader(path, sheetName, reader);
+            for (int i = 0; i < report.ReportLines.Count; i++)
             {
-                WorkbookHelper.AddRowToWorksheetFromSqlDataReader(path, sheetName, reader, row++);
+                //    WorkbookHelper.AddRowToWorksheetFromSqlDataReader(path, sheetName, reader, row++);
             }
+
+
+            //uint row = 2;
+            //while (reader.Read())
+            //{
+            //    WorkbookHelper.AddRowToWorksheetFromSqlDataReader(path, sheetName, reader, row++);
+            //}
 
             Log.DebugFormat("Executing job @ {0}", DateTime.Now);
         }
