@@ -5,8 +5,9 @@ using System.Text;
 using Quartz.Spi;
 using CronPluginService.Framework.Plugin;
 using Quartz;
+using CronPluginService.Framework.Scheduling;
 
-namespace CronPluginService
+namespace CronPluginService.Framework.Plugin
 {
     public class PluginJobFactory : IJobFactory
     {
@@ -19,7 +20,7 @@ namespace CronPluginService
         #region IJobFactory Members
         public IJob NewJob(TriggerFiredBundle bundle)
         {
-            return new ScheduledJob(_pluginJob);
+            return new PluginJobHandler(_pluginJob);
         }
         #endregion
     }

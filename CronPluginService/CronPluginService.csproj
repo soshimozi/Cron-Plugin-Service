@@ -60,11 +60,6 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controller\ScheduledJobController.cs" />
-    <Compile Include="Data\ReportRepository.cs" />
-    <Compile Include="Data\SqlDataHelper.cs" />
-    <Compile Include="Data\StringExtension.cs" />
-    <Compile Include="Domain\ActivityReport.cs" />
-    <Compile Include="Domain\ActivityReportLine.cs" />
     <Compile Include="ServiceControlForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,14 +67,12 @@
       <DependentUpon>ServiceControlForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ServiceControllerFactory.cs" />
-    <Compile Include="Jobs\GenerateManagementReportJob.cs" />
     <Compile Include="CronPluginServiceInstaller.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="CronPluginServiceInstaller.Designer.cs">
       <DependentUpon>CronPluginServiceInstaller.cs</DependentUpon>
     </Compile>
-    <Compile Include="Controller\ReportServiceController.cs" />
     <Compile Include="CronPluginService.cs">
       <SubType>Component</SubType>
     </Compile>
