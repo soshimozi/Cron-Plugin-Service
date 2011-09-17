@@ -18,18 +18,13 @@ namespace CronPluginService.Framework.Scheduling
             ISchedulerFactory sf = new StdSchedulerFactory();
             IScheduler sched = sf.GetScheduler();
 
+            string id = Guid.NewGuid().ToString();
             // define the job and tie it to our HelloJob class
-            JobDetail job = new JobDetail("job"+handlerType.ToString(), "group"+handlerType.ToString(), typeof(PluginJobHandler));
+            JobDetail job = new JobDetail("job"+id, "group"+id, typeof(PluginJobHandler));
 
-            CronTrigger trigger = new CronTrigger("trigger"+handlerType.ToString(), "group"+handlerType.ToString(), expression);
+            CronTrigger trigger = new CronTrigger("trigger"+id, "group"+id, expression);
 
-            object handler = Activator.CreateInstance(handlerType);
-            if (!typeof (IPluginJob).IsAssignableFrom(handlerType))
-            {
-                throw new ArgumentException("Job class must implement the IPluginJob interface.");
-            }
-
-            sched.JobFactory = new PluginJobFactory(handler as IPluginJob);
+            sched.JobFactory = new PluginJobFactory(handlerType);
 
             // Tell quartz to schedule the job using our trigger
             sched.ScheduleJob(job, trigger);

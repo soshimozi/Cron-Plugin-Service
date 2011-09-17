@@ -14,13 +14,13 @@ namespace CronPluginService.Framework.Plugin
 
         #endregion
 
-        #region IJob Members
+        //#region IJob Members
 
-        public void Execute(JobExecutionContext context)
-        {
-            Execute(new PluginContext());
-        }
+        //public void Execute(JobExecutionContext context)
+        //{
+        //    Execute(new PluginContext());
+        //}
 
-        #endregion
+        //#endregion
     }
 }
