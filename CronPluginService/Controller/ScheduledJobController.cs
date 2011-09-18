@@ -25,6 +25,8 @@ namespace CronPluginService.Controller
         {
             if (_stopped)
             {
+                _stopped = false;
+
                 CronServiceConfiguration config =
                     (CronServiceConfiguration)ConfigurationManager.GetSection(
                     "CronServiceConfiguration");
@@ -69,7 +71,6 @@ namespace CronPluginService.Controller
 
                 _schedulerManager.StartSchedulers();
 
-                _stopped = false;
             }
         }
 

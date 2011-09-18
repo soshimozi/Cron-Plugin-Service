@@ -33,9 +33,9 @@ namespace CronPluginService
         }
 
 
-        public IServiceContext GetReportController(TimeSpan reportTime)
-        {
-            return new ReportServiceController(reportTime);
-        }
+        //public IServiceContext GetReportController(TimeSpan reportTime)
+        //{
+        //    return new ReportServiceController(reportTime);
+        //}
     }
 }

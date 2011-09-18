@@ -332,5 +332,10 @@ namespace CronPluginService.Framework.Utility
             return columnName;
         }
 
+
+        public static void AddReportLine()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

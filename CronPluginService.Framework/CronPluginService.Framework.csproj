@@ -77,7 +77,6 @@
     <Compile Include="Scheduling\SchedulerFactory.cs" />
     <Compile Include="Scheduling\SchedulerManager.cs" />
     <Compile Include="Utility\SingletonBase.cs" />
-    <Compile Include="Utility\WorkbookHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
