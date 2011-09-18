@@ -10,7 +10,7 @@ namespace CronPluginService
     {
         private static ServiceControllerFactory _instance;
 
-        protected ServiceControllerFactory()
+        protected ServiceControllerFactory() 
         {
         }
 
@@ -31,8 +31,6 @@ namespace CronPluginService
         {
             return new ScheduledJobController();
         }
-
-
         //public IServiceContext GetReportController(TimeSpan reportTime)
         //{
         //    return new ReportServiceController(reportTime);

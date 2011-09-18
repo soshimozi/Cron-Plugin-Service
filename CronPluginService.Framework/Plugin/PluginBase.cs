@@ -6,7 +6,7 @@ using Quartz;
 
 namespace CronPluginService.Framework.Plugin
 {
-    public abstract class PluginBase : IPluginJob, IJob
+    public abstract class PluginBase : IPluginJob //, IJob
     {
         #region IPluginJob Members
 
@@ -14,13 +14,13 @@ namespace CronPluginService.Framework.Plugin
 
         #endregion
 
-        #region IJob Members
+        //#region IJob Members
 
-        public void Execute(JobExecutionContext context)
-        {
-            Execute(new PluginContext());
-        }
+        //public void Execute(JobExecutionContext context)
+        //{
+        //    Execute(new PluginContext());
+        //}
 
-        #endregion
+        //#endregion
     }
 }

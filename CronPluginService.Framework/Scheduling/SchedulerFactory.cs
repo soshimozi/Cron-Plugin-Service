@@ -5,6 +5,8 @@ using System.Text;
 using CronPluginService.Framework.Utility;
 using Quartz;
 using Quartz.Impl;
+using Quartz.Spi;
+using CronPluginService.Framework.Plugin;
 
 namespace CronPluginService.Framework.Scheduling
 {
@@ -16,10 +18,12 @@ namespace CronPluginService.Framework.Scheduling
             ISchedulerFactory sf = new StdSchedulerFactory();
             IScheduler sched = sf.GetScheduler();
 
-            // define the job and tie it to our HelloJob class
-            JobDetail job = new JobDetail("job"+handlerType.ToString(), "group"+handlerType.ToString(), handlerType);
+            string id = Guid.NewGuid().ToString();
 
-            CronTrigger trigger = new CronTrigger("trigger"+handlerType.ToString(), "group"+handlerType.ToString(), expression);
+            JobDetail job = new JobDetail("job"+id, "group"+id, typeof(PluginJobHandler));
+            CronTrigger trigger = new CronTrigger("trigger"+id, "group"+id, expression);
+
+            sched.JobFactory = new PluginJobFactory(handlerType);
 
             // Tell quartz to schedule the job using our trigger
             sched.ScheduleJob(job, trigger);

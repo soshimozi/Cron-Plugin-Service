@@ -68,12 +68,14 @@
     <Compile Include="Configuration\CronServicePluginInfoCollection.cs" />
     <Compile Include="Configuration\CronServicePluginInstanceElement.cs" />
     <Compile Include="Plugin\PluginBase.cs" />
+    <Compile Include="Plugin\PluginJobFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Plugin\IPluginJob.cs" />
     <Compile Include="Plugin\IPluginMetaData.cs" />
     <Compile Include="Plugin\PluginContext.cs" />
     <Compile Include="Plugin\PluginMetaData.cs" />
     <Compile Include="Plugin\PluginRepository.cs" />
+    <Compile Include="Plugin\PluginJobHandler.cs" />
     <Compile Include="Scheduling\SchedulerFactory.cs" />
     <Compile Include="Scheduling\SchedulerManager.cs" />
     <Compile Include="Utility\SingletonBase.cs" />
