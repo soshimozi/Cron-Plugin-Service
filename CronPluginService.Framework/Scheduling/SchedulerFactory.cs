@@ -19,9 +19,8 @@ namespace CronPluginService.Framework.Scheduling
             IScheduler sched = sf.GetScheduler();
 
             string id = Guid.NewGuid().ToString();
-            // define the job and tie it to our HelloJob class
-            JobDetail job = new JobDetail("job"+id, "group"+id, typeof(PluginJobHandler));
 
+            JobDetail job = new JobDetail("job"+id, "group"+id, typeof(PluginJobHandler));
             CronTrigger trigger = new CronTrigger("trigger"+id, "group"+id, expression);
 
             sched.JobFactory = new PluginJobFactory(handlerType);
