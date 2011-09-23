@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DailyProcessingJobs.Model
 {
-    public class ActivityReport
+    public class Report
     {
         private List<string> _columNames = new List<string>();
 
@@ -19,7 +19,7 @@ namespace DailyProcessingJobs.Model
             get { return _columNames.ToList(); }
         }
 
-        public ActivityReport()
+        public Report()
         {
             ReportLines = new List<ReportLine>();
         }

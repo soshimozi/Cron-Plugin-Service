@@ -2,23 +2,19 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Quartz;
-using System.Reflection;
-using log4net;
-using System.IO;
-using System.Configuration;
-using System.Data;
-using System.ComponentModel.Composition;
 using CronPluginService.Framework.Plugin;
 using DailyProcessingJobs.Model;
+using log4net;
+using System.Reflection;
 using DailyProcessingJobs.Data;
+using System.IO;
 using System.Net.Mail;
 using CronPluginService.Framework.Communication;
 
 namespace DailyProcessingJobs
 {
-    [PluginMetaData(JobKey = "DailyActivityReport")]
-    public class GenerateManagementReportJob : PluginBase
+    [PluginMetaData(JobKey = "ActivityTotalsReport")]
+    public class GenerateActivityTotalsReportJob : PluginBase
     {
         private static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
@@ -27,12 +23,16 @@ namespace DailyProcessingJobs
         private readonly string _worksheet;
         private readonly string _recipients;
 
-        public GenerateManagementReportJob()
+        public GenerateActivityTotalsReportJob()
             : base()
         {
         }
 
-        public GenerateManagementReportJob(string ReportPath, string ReportName, string Worksheet, string Recipients)
+        public GenerateActivityTotalsReportJob(
+            string ReportPath, 
+            string ReportName, 
+            string Worksheet, 
+            string Recipients)
             : base()
         {
             _reportPath = ReportPath;
@@ -41,26 +41,20 @@ namespace DailyProcessingJobs
             _recipients = Recipients;
         }
 
-        /// <summary>
-        /// Executes the specified context.
-        /// </summary>
-        /// <param name="context">The context.</param>
         public override void Execute(PluginContext context)
         {
             try
             {
                 ReportGenerator generator = new ReportGenerator();
-                Report report = ReportRepository.Instance.GetDailyActivityReport();
+                Report report = ReportRepository.Instance.GetAcvityTotalsReport();
 
-                string reportName = string.Format("{0}_{1:MMM}_{1:yyyy}.xlsx", _reportName, DateTime.Now);
+                Log.DebugFormat("Creating {0} at {1}", _reportName, _reportPath);
 
-                Log.DebugFormat("Creating {0} at {1}", reportName, _reportPath);
-
-                string reportPath = Path.Combine(_reportPath, reportName);
+                string reportPath = Path.Combine(_reportPath, _reportName);
 
                 InitializePath(_reportPath);
 
-                generator.GenerateReport(reportPath, string.Format("{0}_{1:MM_dd_yyyy}", _worksheet, DateTime.Now), report, true, true);
+                generator.GenerateReport(reportPath, _worksheet, report, true, true);
 
                 SendReport(reportPath);
 
@@ -95,7 +89,5 @@ namespace DailyProcessingJobs
                 }
             }
         }
-
     }
-
 }

@@ -62,11 +62,18 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Communication\CommunicationManager.cs" />
+    <Compile Include="Configuration\CronScheduledJobCollection.cs" />
+    <Compile Include="Configuration\CronScheduledJobElement.cs" />
     <Compile Include="Configuration\CronServiceConfiguration.cs" />
-    <Compile Include="Configuration\CronServiceInstanceCollection.cs" />
-    <Compile Include="Configuration\CronServiceInstanceElement.cs" />
-    <Compile Include="Configuration\CronServicePluginInfoCollection.cs" />
-    <Compile Include="Configuration\CronServicePluginInstanceElement.cs" />
+    <Compile Include="Configuration\CronServiceParameterCollection.cs" />
+    <Compile Include="Configuration\CronServiceParameterElement.cs" />
+    <Compile Include="Configuration\CronServicePluginInfoCollection.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Configuration\CronServicePluginInstanceElement.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Include="Plugin\PluginBase.cs" />
     <Compile Include="Plugin\PluginJobFactory.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

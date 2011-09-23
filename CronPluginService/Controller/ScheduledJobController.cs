@@ -47,7 +47,7 @@ namespace CronPluginService.Controller
                 PluginRepository.Instance.LoadPlugins(directoryList.ToArray());
 
                 // for each item, create a new scheduler
-                foreach (CronServiceInstanceElement element in config.Instances)
+                foreach (CronScheduledJobElement element in config.Jobs)
                 {
                     string cronExpression = element.Expression;
 
@@ -64,7 +64,18 @@ namespace CronPluginService.Controller
 
                     if( handlerType != null )
                     {
-                        IScheduler scheduler = SchedulerFactory.Instance.GetCronScheduler(cronExpression, handlerType);
+                        // get parameters for this job
+                        List<Object> parameters = new List<Object>();
+                        foreach (CronServiceParameterElement parameter in config.Parameters)
+                        {
+                            if (parameter.JobReference.Equals(element.Name))
+                            {
+                                Type parameterType = Type.GetType(parameter.DataType);
+                                parameters.Add(Convert.ChangeType(parameter.Value, parameterType));
+                            }
+                        }
+
+                        IScheduler scheduler = SchedulerFactory.Instance.GetCronScheduler(cronExpression, handlerType, parameters.ToArray());
                         _schedulerManager.AddScheduler(scheduler);
                     }
                 }

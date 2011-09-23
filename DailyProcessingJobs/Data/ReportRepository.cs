@@ -8,6 +8,7 @@ using System.Data;
 using DailyProcessingJobs.Model;
 using log4net;
 using System.Reflection;
+using System.Configuration;
 
 namespace DailyProcessingJobs.Data
 {
@@ -15,45 +16,72 @@ namespace DailyProcessingJobs.Data
     {
         private static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
+        private readonly string _connectionString;
         public ReportRepository()
         {
+            _connectionString =
+                     ConfigurationManager.ConnectionStrings["Reporting"].ConnectionString;
         }
 
-        public ActivityReport GetActivityReport(string connectionString)
+        public Report GetDailyActivityReport()
+        {
+            return ReportFromQuery(
+                CommandType.Text, 
+                "SELECT * FROM vDailyActivity"
+            );
+        }
+
+        public Report GetReportData(string CommandText)
+        {
+            return ReportFromQuery(CommandType.Text, CommandText);
+        }
+
+        protected Report ReportFromQuery(CommandType commandType, string commandText)
         {
             SqlDataReader reader = null;
 
+            Report report = new Report();
             try
             {
-                reader = SqlDataHelper.ExecuteReader(connectionString, CommandType.Text, "SELECT * FROM vDailyActivity");
+                reader = SqlDataHelper.ExecuteReader(_connectionString, commandType, commandText);
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("Error in GetActivityReport {0}", ex.ToString());
-                return null;
+                Log.ErrorFormat("Error in ReportFromQuery {0}", ex.ToString());
+                reader = null;
             }
 
-            ActivityReport report = new ActivityReport();
-            for (int iField = 0; iField < reader.FieldCount; iField++)
+            if (reader != null)
             {
-                report.AddColumn(reader.GetName(iField));
-            }
-
-            while (reader.Read())
-            {
-                // create a new activity report line
-                ReportLine line = new ReportLine();
-
-                for(int iField=0; iField<reader.FieldCount; iField++)
+                for (int iField = 0; iField < reader.FieldCount; iField++)
                 {
-                    line[reader.GetName(iField)] = reader[iField];
+                    report.AddColumn(reader.GetName(iField));
                 }
 
-                report.ReportLines.Add(line);
+                while (reader.Read())
+                {
+                    // create a new activity report line
+                    ReportLine line = new ReportLine();
+
+                    for (int iField = 0; iField < reader.FieldCount; iField++)
+                    {
+                        line[reader.GetName(iField)] = reader[iField];
+                    }
+
+                    report.ReportLines.Add(line);
+                }
             }
 
             return report;
         }
 
+
+        public Report GetAcvityTotalsReport()
+        {
+            return ReportFromQuery(
+                CommandType.StoredProcedure,
+                "spr_ReportActivitySummary"
+            );
+        }
     }
 }

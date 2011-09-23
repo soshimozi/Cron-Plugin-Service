@@ -15,38 +15,32 @@
     {
         "Entry"
         {
-        "MsmKey" = "8:_11E71B27EA9E771B7611344B92747F14"
-        "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
+        "MsmKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
+        "OwnerKey" = "8:_E5582761222441479E1BD2F41407C58C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_15EAEC675209F828101A1E6D4952558F"
-        "OwnerKey" = "8:_D9BC6A1DC3059BCE7D37F95EDA2664B9"
+        "MsmKey" = "8:_28BED2188C8E1D9B46C68D9328A8D3D2"
+        "OwnerKey" = "8:_BF15F093DDCC99B9A3B66F2748F08FD1"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_15EAEC675209F828101A1E6D4952558F"
-        "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
+        "MsmKey" = "8:_28BED2188C8E1D9B46C68D9328A8D3D2"
+        "OwnerKey" = "8:_E5582761222441479E1BD2F41407C58C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_29735D388C3AD936DC3E25E11890D0E5"
-        "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
+        "MsmKey" = "8:_35AAAE06569322C4D6EC045F965529C6"
+        "OwnerKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_354F2F59CB43B5956D1E7325DF68A1F9"
-        "OwnerKey" = "8:_29735D388C3AD936DC3E25E11890D0E5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_354F2F59CB43B5956D1E7325DF68A1F9"
-        "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
+        "MsmKey" = "8:_35AAAE06569322C4D6EC045F965529C6"
+        "OwnerKey" = "8:_E5582761222441479E1BD2F41407C58C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -57,38 +51,32 @@
         }
         "Entry"
         {
-        "MsmKey" = "8:_7972E45DC141426583736502F377E350"
+        "MsmKey" = "8:_BF15F093DDCC99B9A3B66F2748F08FD1"
+        "OwnerKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BF15F093DDCC99B9A3B66F2748F08FD1"
+        "OwnerKey" = "8:_E5582761222441479E1BD2F41407C58C"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_E5582761222441479E1BD2F41407C58C"
         "OwnerKey" = "8:_UNDEFINED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D9BC6A1DC3059BCE7D37F95EDA2664B9"
-        "OwnerKey" = "8:_29735D388C3AD936DC3E25E11890D0E5"
+        "MsmKey" = "8:_E92759DB10853AE5D191CEC5E4D0184D"
+        "OwnerKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
-        "MsmKey" = "8:_D9BC6A1DC3059BCE7D37F95EDA2664B9"
-        "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EC20D354FECCDEB822B03F7665980BF1"
-        "OwnerKey" = "8:_29735D388C3AD936DC3E25E11890D0E5"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_EC20D354FECCDEB822B03F7665980BF1"
-        "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_7972E45DC141426583736502F377E350"
+        "MsmKey" = "8:_E92759DB10853AE5D191CEC5E4D0184D"
+        "OwnerKey" = "8:_E5582761222441479E1BD2F41407C58C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -100,37 +88,37 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_11E71B27EA9E771B7611344B92747F14"
+        "OwnerKey" = "8:_E5582761222441479E1BD2F41407C58C"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_29735D388C3AD936DC3E25E11890D0E5"
+        "OwnerKey" = "8:_18A056E6F7BCE3027B7085F48811EDAF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_354F2F59CB43B5956D1E7325DF68A1F9"
+        "OwnerKey" = "8:_BF15F093DDCC99B9A3B66F2748F08FD1"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_D9BC6A1DC3059BCE7D37F95EDA2664B9"
+        "OwnerKey" = "8:_28BED2188C8E1D9B46C68D9328A8D3D2"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_15EAEC675209F828101A1E6D4952558F"
+        "OwnerKey" = "8:_E92759DB10853AE5D191CEC5E4D0184D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_EC20D354FECCDEB822B03F7665980BF1"
+        "OwnerKey" = "8:_35AAAE06569322C4D6EC045F965529C6"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -215,17 +203,45 @@
     {
         "CustomAction"
         {
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_679AFE8F527D486B91F3BFBA9566B024"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_26AF3D3ACF874709A720C38441F5A2CA"
             {
             "Name" = "8:Primary output from CronPluginService (Active)"
             "Condition" = "8:"
-            "Object" = "8:_7972E45DC141426583736502F377E350"
+            "Object" = "8:_E5582761222441479E1BD2F41407C58C"
             "FileType" = "3:2"
-            "InstallAction" = "3:1"
+            "InstallAction" = "3:3"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_531231F1_CA12_49E4_9396_47978C7FB060"
+            "Identifier" = "8:_CB15F42B_2D01_49C6_B5E4_EEC1AD006A88"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_3FE48376921B4DC9B9C1CB8BDC8D8358"
+            {
+            "Name" = "8:Primary output from CronPluginService (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_E5582761222441479E1BD2F41407C58C"
+            "FileType" = "3:2"
+            "InstallAction" = "3:2"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:2"
+            "Identifier" = "8:_18326C08_2080_4218_BF4F_E054CCB7C87F"
+            "InstallerClass" = "11:TRUE"
+            "CustomActionData" = "8:"
+            }
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_63EE7ED0CFEE4B2BBB6EC1351730DBC0"
+            {
+            "Name" = "8:Primary output from CronPluginService (Active)"
+            "Condition" = "8:"
+            "Object" = "8:_E5582761222441479E1BD2F41407C58C"
+            "FileType" = "3:2"
+            "InstallAction" = "3:4"
+            "Arguments" = "8:"
+            "EntryPoint" = "8:"
+            "Sequence" = "3:1"
+            "Identifier" = "8:_1FA5A28C_223A_4E42_A3ED_253471A847F8"
             "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
@@ -238,50 +254,22 @@
             "InstallAction" = "3:2"
             "Arguments" = "8:\"[TARGETDIR]\\CronPluginService.exe\""
             "EntryPoint" = "8:"
-            "Sequence" = "3:2"
+            "Sequence" = "3:1"
             "Identifier" = "8:_4E9A1335_F5BE_4BDE_A7C8_DBC98C9BFD7C"
             "InstallerClass" = "11:FALSE"
             "CustomActionData" = "8:"
             }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_A5371FF8C87940F3A2767DC6A6674EF4"
+            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_A7F2402031CB48D4A0B5A746C9801D14"
             {
             "Name" = "8:Primary output from CronPluginService (Active)"
             "Condition" = "8:"
-            "Object" = "8:_7972E45DC141426583736502F377E350"
+            "Object" = "8:_E5582761222441479E1BD2F41407C58C"
             "FileType" = "3:2"
-            "InstallAction" = "3:4"
+            "InstallAction" = "3:1"
             "Arguments" = "8:"
             "EntryPoint" = "8:"
             "Sequence" = "3:1"
-            "Identifier" = "8:_AD14BD35_BF25_4587_91FB_C020018C1EF9"
-            "InstallerClass" = "11:TRUE"
-            "CustomActionData" = "8:"
-            }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_B0AA5B2AEC354EC4A8B0D54D36AE49F9"
-            {
-            "Name" = "8:Primary output from CronPluginService (Active)"
-            "Condition" = "8:"
-            "Object" = "8:_7972E45DC141426583736502F377E350"
-            "FileType" = "3:2"
-            "InstallAction" = "3:2"
-            "Arguments" = "8:"
-            "EntryPoint" = "8:"
-            "Sequence" = "3:1"
-            "Identifier" = "8:_0592E9A3_E9E3_4F0E_9D98_5D1417773011"
-            "InstallerClass" = "11:TRUE"
-            "CustomActionData" = "8:"
-            }
-            "{4AA51A2D-7D85-4A59-BA75-B0809FC8B380}:_D10D432AF7334245A1D8F3A3E5CB1018"
-            {
-            "Name" = "8:Primary output from CronPluginService (Active)"
-            "Condition" = "8:"
-            "Object" = "8:_7972E45DC141426583736502F377E350"
-            "FileType" = "3:2"
-            "InstallAction" = "3:3"
-            "Arguments" = "8:"
-            "EntryPoint" = "8:"
-            "Sequence" = "3:1"
-            "Identifier" = "8:_29783A29_D7CC_487A_837B_EEAAC8AD7C44"
+            "Identifier" = "8:_F0C7B9D6_48C8_4AF8_B818_732581BA0298"
             "InstallerClass" = "11:TRUE"
             "CustomActionData" = "8:"
             }
@@ -308,76 +296,14 @@
         }
         "File"
         {
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_11E71B27EA9E771B7611344B92747F14"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
-                "ScatterAssemblies"
-                {
-                    "_11E71B27EA9E771B7611344B92747F14"
-                    {
-                    "Name" = "8:log4net.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:log4net.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_8D0C1C2EE5C54D83BB686B029B2D20BF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_15EAEC675209F828101A1E6D4952558F"
-            {
-            "AssemblyRegister" = "3:1"
-            "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:Common.Logging, Version=1.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e"
-                "ScatterAssemblies"
-                {
-                    "_15EAEC675209F828101A1E6D4952558F"
-                    {
-                    "Name" = "8:Common.Logging.dll"
-                    "Attributes" = "3:512"
-                    }
-                }
-            "SourcePath" = "8:Common.Logging.dll"
-            "TargetName" = "8:"
-            "Tag" = "8:"
-            "Folder" = "8:_8D0C1C2EE5C54D83BB686B029B2D20BF"
-            "Condition" = "8:"
-            "Transitive" = "11:FALSE"
-            "Vital" = "11:TRUE"
-            "ReadOnly" = "11:FALSE"
-            "Hidden" = "11:FALSE"
-            "System" = "11:FALSE"
-            "Permanent" = "11:FALSE"
-            "SharedLegacy" = "11:FALSE"
-            "PackageAs" = "3:1"
-            "Register" = "3:1"
-            "Exclude" = "11:FALSE"
-            "IsDependency" = "11:TRUE"
-            "IsolateTo" = "8:"
-            }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_29735D388C3AD936DC3E25E11890D0E5"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_18A056E6F7BCE3027B7085F48811EDAF"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:CronPluginService.Framework, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_29735D388C3AD936DC3E25E11890D0E5"
+                    "_18A056E6F7BCE3027B7085F48811EDAF"
                     {
                     "Name" = "8:CronPluginService.Framework.dll"
                     "Attributes" = "3:512"
@@ -401,20 +327,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_354F2F59CB43B5956D1E7325DF68A1F9"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_28BED2188C8E1D9B46C68D9328A8D3D2"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:DocumentFormat.OpenXml, Version=2.0.5022.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:Common.Logging, Version=1.2.0.0, Culture=neutral, PublicKeyToken=af08829b84f0328e"
                 "ScatterAssemblies"
                 {
-                    "_354F2F59CB43B5956D1E7325DF68A1F9"
+                    "_28BED2188C8E1D9B46C68D9328A8D3D2"
                     {
-                    "Name" = "8:DocumentFormat.OpenXml.dll"
+                    "Name" = "8:Common.Logging.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:DocumentFormat.OpenXml.dll"
+            "SourcePath" = "8:Common.Logging.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8D0C1C2EE5C54D83BB686B029B2D20BF"
@@ -432,14 +358,45 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_D9BC6A1DC3059BCE7D37F95EDA2664B9"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_35AAAE06569322C4D6EC045F965529C6"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:System.ComponentModel.Composition, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_35AAAE06569322C4D6EC045F965529C6"
+                    {
+                    "Name" = "8:System.ComponentModel.Composition.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:System.ComponentModel.Composition.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_8D0C1C2EE5C54D83BB686B029B2D20BF"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BF15F093DDCC99B9A3B66F2748F08FD1"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
             "AssemblyAsmDisplayName" = "8:Quartz, Version=1.0.3.3, Culture=neutral, PublicKeyToken=f6b8c98a402cc8a4, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_D9BC6A1DC3059BCE7D37F95EDA2664B9"
+                    "_BF15F093DDCC99B9A3B66F2748F08FD1"
                     {
                     "Name" = "8:Quartz.dll"
                     "Attributes" = "3:512"
@@ -463,20 +420,20 @@
             "IsDependency" = "11:TRUE"
             "IsolateTo" = "8:"
             }
-            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_EC20D354FECCDEB822B03F7665980BF1"
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_E92759DB10853AE5D191CEC5E4D0184D"
             {
             "AssemblyRegister" = "3:1"
             "AssemblyIsInGAC" = "11:FALSE"
-            "AssemblyAsmDisplayName" = "8:System.ComponentModel.Composition, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL"
+            "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
                 "ScatterAssemblies"
                 {
-                    "_EC20D354FECCDEB822B03F7665980BF1"
+                    "_E92759DB10853AE5D191CEC5E4D0184D"
                     {
-                    "Name" = "8:System.ComponentModel.Composition.dll"
+                    "Name" = "8:log4net.dll"
                     "Attributes" = "3:512"
                     }
                 }
-            "SourcePath" = "8:System.ComponentModel.Composition.dll"
+            "SourcePath" = "8:log4net.dll"
             "TargetName" = "8:"
             "Tag" = "8:"
             "Folder" = "8:_8D0C1C2EE5C54D83BB686B029B2D20BF"
@@ -551,7 +508,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Cron Plugin Service"
         "ProductCode" = "8:{514B96B7-19AA-4D25-AEF0-F1EECB44FE22}"
-        "PackageCode" = "8:{1769763D-3655-4519-B7CD-92B151224DDF}"
+        "PackageCode" = "8:{3420D7F6-45EC-4D23-936C-EB089ECF924F}"
         "UpgradeCode" = "8:{47178FA8-A818-4B0D-8F1E-42BB29F9BADD}"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
@@ -1097,7 +1054,7 @@
                 {
                 }
             }
-            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_7972E45DC141426583736502F377E350"
+            "{5259A561-127C-4D43-A0A1-72F10C7B3BF8}:_E5582761222441479E1BD2F41407C58C"
             {
             "SourcePath" = "8:..\\CronPluginService\\obj\\Debug\\CronPluginService.exe"
             "TargetName" = "8:"

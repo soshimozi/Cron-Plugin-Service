@@ -11,35 +11,30 @@ namespace CronPluginService.Framework.Plugin
 {
     public class PluginJobFactory : IJobFactory
     {
-        private Type _pluginType;
-        public PluginJobFactory(Type pluginType)
+        private readonly Object[] _parameters;
+        public PluginJobFactory(Type pluginType, Object [] parameters)
         {
+            PluginType = pluginType;
+            _parameters = parameters;
+
+            if (!typeof(IPluginJob).IsAssignableFrom(pluginType))
+            {
+                throw new ArgumentException("Handler must implement the IPluginJob interface.");
+            }
+
             PluginType = pluginType;
         }
 
         #region IJobFactory Members
         public IJob NewJob(TriggerFiredBundle bundle)
         {
-            return new PluginJobHandler(Activator.CreateInstance(PluginType) as IPluginJob);
+            return new PluginJobHandler(Activator.CreateInstance(PluginType, _parameters) as IPluginJob);
         }
         #endregion
 
         public Type PluginType
         {
-            get
-            {
-                return _pluginType;
-            }
-
-            set
-            {
-                if (!typeof(IPluginJob).IsAssignableFrom(value))
-                {
-                    throw new ArgumentException("Handler must implement the IPluginJob interface.");
-                }
-
-                _pluginType = value;
-            }
+            get; private set;
         }
     }
 }
