@@ -15,13 +15,6 @@ namespace CronPluginService.Framework.Configuration
             set { base["name"] = value; }
         }
 
-        [ConfigurationProperty("jobref", IsRequired = true)]
-        public string JobReference
-        {
-            get { return (string)base["jobref"]; }
-            set { base["jobref"] = value; }
-        }
-
         [ConfigurationProperty("value", IsRequired = true)]
         public string Value
         {

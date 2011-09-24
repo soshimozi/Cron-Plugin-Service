@@ -22,12 +22,12 @@ namespace CronPluginService.Framework.Configuration
             set { this["Jobs"] = value; }
         }
 
-        [ConfigurationProperty("Parameters", IsRequired = true)]
-        public CronServiceParameterCollection Parameters
-        {
-            get { return (CronServiceParameterCollection)this["Parameters"]; }
-            set { this["Parameters"] = value; }
-        }
+        //[ConfigurationProperty("JobParameters", IsRequired = true)]
+        //public CronServiceJobParameterCollection JobParameters
+        //{
+        //    get { return (CronServiceJobParameterCollection)this["JobParameters"]; }
+        //    set { this["JobParameters"] = value; }
+        //}
 
         [ConfigurationProperty("PluginConfiguration", IsRequired = true)]
         public CronServicePluginInfoCollection PluginInfo

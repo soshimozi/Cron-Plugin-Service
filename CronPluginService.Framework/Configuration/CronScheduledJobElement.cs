@@ -28,5 +28,12 @@ namespace CronPluginService.Framework.Configuration
             get { return (string)base["type"]; }
             set { base["type"] = value; }
         }
+
+        [ConfigurationProperty("JobParameters", IsRequired = true)]
+        public CronServiceParameterCollection Parameters
+        {
+            get { return (CronServiceParameterCollection)this["JobParameters"]; }
+            set { this["JobParameters"] = value; }
+        }
     }
 }

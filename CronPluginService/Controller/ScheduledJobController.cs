@@ -66,12 +66,15 @@ namespace CronPluginService.Controller
                     {
                         // get parameters for this job
                         List<Object> parameters = new List<Object>();
-                        foreach (CronServiceParameterElement parameter in config.Parameters)
+
+                        if (element.Parameters != null)
                         {
-                            if (parameter.JobReference.Equals(element.Name))
+                            foreach (CronServiceParameterElement parameter in element.Parameters)
                             {
+                                // all these go in the
                                 Type parameterType = Type.GetType(parameter.DataType);
                                 parameters.Add(Convert.ChangeType(parameter.Value, parameterType));
+
                             }
                         }
 
