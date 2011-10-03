@@ -1,11 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using CronPluginService.Framework.Utility;
 using Quartz;
 using Quartz.Impl;
-using Quartz.Spi;
 using CronPluginService.Framework.Plugin;
 
 namespace CronPluginService.Framework.Scheduling
@@ -20,8 +16,8 @@ namespace CronPluginService.Framework.Scheduling
 
             string id = Guid.NewGuid().ToString();
 
-            JobDetail job = new JobDetail("job"+id, "group"+id, typeof(PluginJobHandler));
-            CronTrigger trigger = new CronTrigger("trigger"+id, "group"+id, expression);
+            var job = new JobDetail("job"+id, "group"+id, typeof(PluginJobHandler));
+            var trigger = new CronTrigger("trigger"+id, "group"+id, expression);
 
             sched.JobFactory = new PluginJobFactory(handlerType, parameters);
 

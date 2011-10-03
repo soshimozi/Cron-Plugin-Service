@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CronPluginService.Controller;
+﻿using CronPluginService.Controller;
 
 namespace CronPluginService
 {
@@ -18,12 +14,7 @@ namespace CronPluginService
         {
             get
             {
-                if (_instance == null)
-                {
-                    _instance = new ServiceControllerFactory();
-                }
-
-                return _instance;
+                return _instance ?? (_instance = new ServiceControllerFactory());
             }
         }
 

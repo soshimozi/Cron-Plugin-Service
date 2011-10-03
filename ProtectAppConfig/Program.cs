@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Configuration;
 
 namespace ProtectAppConfig
@@ -10,7 +7,7 @@ namespace ProtectAppConfig
     {
         static void Main(string[] args)
         {
-            Program prog = new Program();
+            var prog = new Program();
             prog.Run(args);
         }
 
@@ -37,7 +34,7 @@ namespace ProtectAppConfig
                 Configuration config = ConfigurationManager.
                     OpenExeConfiguration(exePath);
 
-                ConnectionStringsSection section =
+                var section =
                     config.GetSection("connectionStrings")
                     as ConnectionStringsSection;
 

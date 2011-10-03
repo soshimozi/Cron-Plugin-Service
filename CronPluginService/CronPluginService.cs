@@ -1,48 +1,39 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Linq;
-using System.ServiceProcess;
-using System.Text;
-using log4net;
-using System.Reflection;
+﻿using System.ServiceProcess;
 
 namespace CronPluginService
 {
     public partial class CronPluginService : ServiceBase
     {
-        private static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        //private static ILog _log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
-        IServiceContext serverContext;
+        IServiceContext _serverContext;
         public CronPluginService()
         {
             InitializeComponent();
 
-            serverContext = ServiceControllerFactory.Instance.GetScheduledJobController();
+            _serverContext = ServiceControllerFactory.Instance.GetScheduledJobController();
 
         }
 
         protected override void OnStart(string[] args)
         {
-            serverContext.Start(args);
+            _serverContext.Start(args);
         }
 
         protected override void OnStop()
         {
-            serverContext.Stop();
-            serverContext = null;
+            _serverContext.Stop();
+            _serverContext = null;
         }
 
         protected override void OnPause()
         {
-            serverContext.Pause();
+            _serverContext.Pause();
         }
 
         protected override void OnContinue()
         {
-            serverContext.Continue();
+            _serverContext.Continue();
         }
     }
 }

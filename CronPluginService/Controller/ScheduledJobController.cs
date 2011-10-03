@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Configuration;
-using System.Reflection;
 using Quartz;
 using CronPluginService.Framework.Configuration;
 using CronPluginService.Framework.Scheduling;
@@ -15,9 +13,6 @@ namespace CronPluginService.Controller
     {
         private bool _stopped = true;
         private readonly SchedulerManager _schedulerManager = new SchedulerManager();
-        public ScheduledJobController()
-        {
-        }
 
         #region IServiceContext Members
 
@@ -27,7 +22,7 @@ namespace CronPluginService.Controller
             {
                 _stopped = false;
 
-                CronServiceConfiguration config =
+                var config =
                     (CronServiceConfiguration)ConfigurationManager.GetSection(
                     "CronServiceConfiguration");
 
@@ -35,16 +30,14 @@ namespace CronPluginService.Controller
                 _schedulerManager.StopSchedulers();
                 _schedulerManager.RemoveAll();
 
-                List<string> directoryList = new List<string>();
-
                 // let's read the list of plugininfos
-                foreach (CronServicePluginInstanceElement plugin in config.PluginInfo)
-                {
-                    directoryList.Add(plugin.Path);
-                }
 
                 // now do our DI
-                PluginRepository.Instance.LoadPlugins(directoryList.ToArray());
+                PluginRepository.Instance.LoadPlugins(
+                    (from CronServicePluginInstanceElement plugin 
+                     in config.PluginInfo 
+                     select plugin.Path).
+                     ToArray());
 
                 // for each item, create a new scheduler
                 foreach (CronScheduledJobElement element in config.Jobs)
@@ -55,27 +48,21 @@ namespace CronPluginService.Controller
                     // and get the type from the assembly,
                     // but for now we just ask the current
                     // assembly
-                    Type handlerType = Type.GetType(element.TypeString, false);
-                    if (handlerType == null)
-                    {
-                        // let's see if we can find our type in the DI collection
-                        handlerType = PluginRepository.Instance.GetTypeForJob(element.Name);
-                    }
+                    Type handlerType = Type.GetType(element.TypeString, false) ??
+                                       PluginRepository.Instance.GetTypeForJob(element.Name);
 
                     if( handlerType != null )
                     {
                         // get parameters for this job
-                        List<Object> parameters = new List<Object>();
+                        var parameters = new List<Object>();
 
                         if (element.Parameters != null)
                         {
-                            foreach (CronServiceParameterElement parameter in element.Parameters)
-                            {
-                                // all these go in the
-                                Type parameterType = Type.GetType(parameter.DataType);
-                                parameters.Add(Convert.ChangeType(parameter.Value, parameterType));
-
-                            }
+                            parameters.AddRange(
+                                from CronServiceParameterElement parameter 
+                                in element.Parameters let parameterType = Type.GetType(parameter.DataType) 
+                                where parameterType != null 
+                                select Convert.ChangeType(parameter.Value, parameterType));
                         }
 
                         IScheduler scheduler = SchedulerFactory.Instance.GetCronScheduler(cronExpression, handlerType, parameters.ToArray());

@@ -1,14 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Quartz;
 using System.Reflection;
 using log4net;
 using System.IO;
-using System.Configuration;
-using System.Data;
-using System.ComponentModel.Composition;
 using CronPluginService.Framework.Plugin;
 using DailyProcessingJobs.Model;
 using DailyProcessingJobs.Data;
@@ -20,7 +13,7 @@ namespace DailyProcessingJobs
     [PluginMetaData(JobKey = "DailyActivityReport")]
     public class GenerateManagementReportJob : PluginBase
     {
-        private static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly string _reportPath;
         private readonly string _reportName;
@@ -28,17 +21,15 @@ namespace DailyProcessingJobs
         private readonly string _recipients;
 
         public GenerateManagementReportJob()
-            : base()
         {
         }
 
-        public GenerateManagementReportJob(string ReportPath, string ReportName, string Worksheet, string Recipients)
-            : base()
+        public GenerateManagementReportJob(string reportPath, string reportName, string worksheet, string recipients)
         {
-            _reportPath = ReportPath;
-            _reportName = ReportName;
-            _worksheet = Worksheet;
-            _recipients = Recipients;
+            _reportPath = reportPath;
+            _reportName = reportName;
+            _worksheet = worksheet;
+            _recipients = recipients;
         }
 
         /// <summary>
@@ -49,7 +40,7 @@ namespace DailyProcessingJobs
         {
             try
             {
-                ReportGenerator generator = new ReportGenerator();
+                var generator = new ReportGenerator();
                 Report report = ReportRepository.Instance.GetDailyActivityReport();
 
                 string reportName = string.Format("{0}_{1:MMM}_{1:yyyy}.xlsx", _reportName, DateTime.Now);

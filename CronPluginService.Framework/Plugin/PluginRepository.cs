@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using CronPluginService.Framework.Utility;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
 using System.Reflection;
-using CronPluginService.Framework.Scheduling;
 
 namespace CronPluginService.Framework.Plugin
 {

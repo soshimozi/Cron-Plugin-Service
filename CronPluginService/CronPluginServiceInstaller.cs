@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.Configuration.Install;
-using System.Linq;
 using System.ServiceProcess;
 using System.Diagnostics;
 
@@ -17,13 +13,11 @@ namespace CronPluginService
         {
             var processInstaller = new ServiceProcessInstaller();
             var serviceInstaller = new ServiceInstaller();
-            var myEventLogInstaller = new EventLogInstaller();
+            var myEventLogInstaller = new EventLogInstaller {Source = "Cron Plugin Service", Log = "Application"};
 
             //// Set the Source of Event Log, to be created.
-            myEventLogInstaller.Source = "Cron Plugin Service";
 
             //// Set the Log that source is created in
-            myEventLogInstaller.Log = "Application";
 
             //set the privileges
             processInstaller.Account = ServiceAccount.LocalSystem;
@@ -34,9 +28,9 @@ namespace CronPluginService
             //must be the same as what was set in Program's constructor
             serviceInstaller.ServiceName = "Cron Plugin Service";
 
-            this.Installers.Add(processInstaller);
-            this.Installers.Add(serviceInstaller);
-            this.Installers.Add(myEventLogInstaller);
+            Installers.Add(processInstaller);
+            Installers.Add(serviceInstaller);
+            Installers.Add(myEventLogInstaller);
         }
     }
 }

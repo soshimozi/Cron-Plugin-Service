@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.ServiceProcess;
-using System.Text;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace CronPluginService
@@ -21,18 +17,16 @@ namespace CronPluginService
             {
                 if (args[0].ToLower() == "/gui")
                 {
-                    ServiceControlForm form = new ServiceControlForm();
-                    Application.Run(form);
+                    Application.Run(new ServiceControlForm());
                 }
             }
             else
             {
-                ServiceBase[] ServicesToRun;
-                ServicesToRun = new ServiceBase[] 
-            { 
-                new CronPluginService() 
-            };
-                ServiceBase.Run(ServicesToRun);
+                var servicesToRun = new ServiceBase[]
+                                        {
+                                            new CronPluginService()
+                                        };
+                ServiceBase.Run(servicesToRun);
             }
         }
 

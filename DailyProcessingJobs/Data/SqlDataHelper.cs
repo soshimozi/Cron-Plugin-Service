@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Data.SqlClient;
 using System.Data;
 using System.Xml;
@@ -29,7 +27,7 @@ namespace DailyProcessingJobs.Data
         /// </summary>
         /// <param name="command">The command to which the parameters will be added</param>
         /// <param name="commandParameters">An array of SqlParameters to be added to command</param>
-        private static void AttachParameters(SqlCommand command, SqlParameter[] commandParameters)
+        private static void AttachParameters(SqlCommand command, IEnumerable<SqlParameter> commandParameters)
         {
             if (command == null) throw new ArgumentNullException("command");
             if (commandParameters != null)
@@ -56,7 +54,7 @@ namespace DailyProcessingJobs.Data
         /// </summary>
         /// <param name="commandParameters">Array of SqlParameters to be assigned values</param>
         /// <param name="dataRow">The dataRow used to hold the stored procedure's parameter values</param>
-        private static void AssignParameterValues(SqlParameter[] commandParameters, DataRow dataRow)
+        private static void AssignParameterValues(IEnumerable<SqlParameter> commandParameters, DataRow dataRow)
         {
             if ((commandParameters == null) || (dataRow == null))
             {
@@ -107,15 +105,8 @@ namespace DailyProcessingJobs.Data
                 // If the current array value derives from IDbDataParameter, then assign its Value property
                 if (parameterValues[i] is IDbDataParameter)
                 {
-                    IDbDataParameter paramInstance = (IDbDataParameter)parameterValues[i];
-                    if (paramInstance.Value == null)
-                    {
-                        commandParameters[i].Value = DBNull.Value;
-                    }
-                    else
-                    {
-                        commandParameters[i].Value = paramInstance.Value;
-                    }
+                    var paramInstance = (IDbDataParameter)parameterValues[i];
+                    commandParameters[i].Value = paramInstance.Value ?? DBNull.Value;
                 }
                 else if (parameterValues[i] == null)
                 {
@@ -139,10 +130,10 @@ namespace DailyProcessingJobs.Data
         /// <param name="commandText">The stored procedure name or T-SQL command</param>
         /// <param name="commandParameters">An array of SqlParameters to be associated with the command or 'null' if no parameters are required</param>
         /// <param name="mustCloseConnection"><c>true</c> if the connection was opened by the method, otherwose is false.</param>
-        private static void PrepareCommand(SqlCommand command, SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, SqlParameter[] commandParameters, out bool mustCloseConnection)
+        private static void PrepareCommand(SqlCommand command, SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, IEnumerable<SqlParameter> commandParameters, out bool mustCloseConnection)
         {
             if (command == null) throw new ArgumentNullException("command");
-            if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
+            if (string.IsNullOrEmpty(commandText)) throw new ArgumentNullException("commandText");
 
             // If the provided connection is not open, we will open it
             if (connection.State != ConnectionState.Open)
@@ -198,7 +189,7 @@ namespace DailyProcessingJobs.Data
         public static int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteNonQuery(connectionString, commandType, commandText, (SqlParameter[])null);
+            return ExecuteNonQuery(connectionString, commandType, commandText, null);
         }
 
         /// <summary>
@@ -216,10 +207,10 @@ namespace DailyProcessingJobs.Data
         /// <returns>An int representing the number of rows affected by the command</returns>
         public static int ExecuteNonQuery(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
 
             // Create & open a SqlConnection, and dispose of it after we are done
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -245,8 +236,9 @@ namespace DailyProcessingJobs.Data
         /// <returns>An int representing the number of rows affected by the command</returns>
         public static int ExecuteNonQuery(string connectionString, string spName, params object[] parameterValues)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(connectionString))
+                throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -260,11 +252,9 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName);
-            }
+
+            // Otherwise we can just call the SP without params
+            return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -281,7 +271,7 @@ namespace DailyProcessingJobs.Data
         public static int ExecuteNonQuery(SqlConnection connection, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteNonQuery(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteNonQuery(connection, commandType, commandText, null);
         }
 
         /// <summary>
@@ -302,9 +292,9 @@ namespace DailyProcessingJobs.Data
             if (connection == null) throw new ArgumentNullException("connection");
 
             // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
-            bool mustCloseConnection = false;
-            PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
+            var cmd = new SqlCommand();
+            bool mustCloseConnection;
+            PrepareCommand(cmd, connection, null, commandType, commandText, commandParameters, out mustCloseConnection);
 
             // Finally, execute the command
             int retval = cmd.ExecuteNonQuery();
@@ -334,7 +324,7 @@ namespace DailyProcessingJobs.Data
         public static int ExecuteNonQuery(SqlConnection connection, string spName, params object[] parameterValues)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -348,11 +338,8 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName);
         }
 
         ///// <summary>
@@ -467,7 +454,7 @@ namespace DailyProcessingJobs.Data
         public static DataSet ExecuteDataset(string connectionString, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteDataset(connectionString, commandType, commandText, (SqlParameter[])null);
+            return ExecuteDataset(connectionString, commandType, commandText, null);
         }
 
         /// <summary>
@@ -490,10 +477,10 @@ namespace DailyProcessingJobs.Data
             //string strBadParameter = SecurityManager.InvalidParameterExist(commandParameters);
             //if (strBadParameter.Length > 0) throw new ArgumentException("Error 9000 " + strBadParameter.ToString());
 
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
 
             // Create & open a SqlConnection, and dispose of it after we are done
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -519,8 +506,8 @@ namespace DailyProcessingJobs.Data
         /// <returns>A dataset containing the resultset generated by the command</returns>
         public static DataSet ExecuteDataset(string connectionString, string spName, params object[] parameterValues)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -534,11 +521,8 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteDataset(connectionString, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteDataset(connectionString, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteDataset(connectionString, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -555,7 +539,7 @@ namespace DailyProcessingJobs.Data
         public static DataSet ExecuteDataset(SqlConnection connection, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteDataset(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteDataset(connection, commandType, commandText, null);
         }
 
         /// <summary>
@@ -581,14 +565,14 @@ namespace DailyProcessingJobs.Data
             if (connection == null) throw new ArgumentNullException("connection");
 
             // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
-            bool mustCloseConnection = false;
-            PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
+            var cmd = new SqlCommand();
+            bool mustCloseConnection;
+            PrepareCommand(cmd, connection, null, commandType, commandText, commandParameters, out mustCloseConnection);
 
             // Create the DataAdapter & DataSet
-            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+            using (var da = new SqlDataAdapter(cmd))
             {
-                DataSet ds = new DataSet();
+                var ds = new DataSet();
 
                 // Fill the DataSet using default values for DataTable names, etc
                 da.Fill(ds);
@@ -622,7 +606,7 @@ namespace DailyProcessingJobs.Data
         public static DataSet ExecuteDataset(SqlConnection connection, string spName, params object[] parameterValues)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -636,11 +620,8 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteDataset(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteDataset(connection, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteDataset(connection, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -657,7 +638,7 @@ namespace DailyProcessingJobs.Data
         public static DataSet ExecuteDataset(SqlTransaction transaction, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteDataset(transaction, commandType, commandText, (SqlParameter[])null);
+            return ExecuteDataset(transaction, commandType, commandText, null);
         }
 
         /// <summary>
@@ -679,14 +660,14 @@ namespace DailyProcessingJobs.Data
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
             // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
-            bool mustCloseConnection = false;
+            var cmd = new SqlCommand();
+            bool mustCloseConnection;
             PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
 
             // Create the DataAdapter & DataSet
-            using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+            using (var da = new SqlDataAdapter(cmd))
             {
-                DataSet ds = new DataSet();
+                var ds = new DataSet();
 
                 // Fill the DataSet using default values for DataTable names, etc
                 da.Fill(ds);
@@ -718,7 +699,7 @@ namespace DailyProcessingJobs.Data
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -732,11 +713,8 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteDataset(transaction, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteDataset(transaction, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteDataset(transaction, CommandType.StoredProcedure, spName);
         }
 
         #endregion ExecuteDataset
@@ -770,29 +748,25 @@ namespace DailyProcessingJobs.Data
         /// <param name="commandParameters">An array of SqlParameters to be associated with the command or 'null' if no parameters are required</param>
         /// <param name="connectionOwnership">Indicates whether the connection parameter was provided by the caller, or created by SqlHelper</param>
         /// <returns>SqlDataReader containing the results of the command</returns>
-        private static SqlDataReader ExecuteReader(SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, SqlParameter[] commandParameters, SqlConnectionOwnership connectionOwnership)
+        private static SqlDataReader ExecuteReader(SqlConnection connection, SqlTransaction transaction, CommandType commandType, string commandText, IEnumerable<SqlParameter> commandParameters, SqlConnectionOwnership connectionOwnership)
         {
             if (connection == null) throw new ArgumentNullException("connection");
+            if (commandParameters == null) throw new ArgumentNullException("commandParameters");
 
             bool mustCloseConnection = false;
             // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
+            var cmd = new SqlCommand();
             try
             {
                 PrepareCommand(cmd, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
 
                 // Create a reader
-                SqlDataReader dataReader;
 
                 // Call ExecuteReader with the appropriate CommandBehavior
-                if (connectionOwnership == SqlConnectionOwnership.External)
-                {
-                    dataReader = cmd.ExecuteReader();
-                }
-                else
-                {
-                    dataReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-                }
+                SqlDataReader dataReader = 
+                    connectionOwnership == SqlConnectionOwnership.External ? 
+                    cmd.ExecuteReader() : 
+                    cmd.ExecuteReader(CommandBehavior.CloseConnection);
 
                 // Detach the SqlParameters from the command object, so they can be used again.
                 // HACK: There is a problem here, the output parameter values are fletched 
@@ -836,7 +810,7 @@ namespace DailyProcessingJobs.Data
         public static SqlDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteReader(connectionString, commandType, commandText, (SqlParameter[])null);
+            return ExecuteReader(connectionString, commandType, commandText, null);
         }
 
         /// <summary>
@@ -854,7 +828,7 @@ namespace DailyProcessingJobs.Data
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
         public static SqlDataReader ExecuteReader(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
             SqlConnection connection = null;
             try
             {
@@ -890,8 +864,8 @@ namespace DailyProcessingJobs.Data
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
         public static SqlDataReader ExecuteReader(string connectionString, string spName, params object[] parameterValues)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -902,11 +876,8 @@ namespace DailyProcessingJobs.Data
 
                 return ExecuteReader(connectionString, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteReader(connectionString, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteReader(connectionString, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -923,7 +894,7 @@ namespace DailyProcessingJobs.Data
         public static SqlDataReader ExecuteReader(SqlConnection connection, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteReader(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteReader(connection, commandType, commandText, null);
         }
 
         /// <summary>
@@ -942,7 +913,7 @@ namespace DailyProcessingJobs.Data
         public static SqlDataReader ExecuteReader(SqlConnection connection, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
         {
             // Pass through the call to the private overload using a null transaction value and an externally owned connection
-            return ExecuteReader(connection, (SqlTransaction)null, commandType, commandText, commandParameters, SqlConnectionOwnership.External);
+            return ExecuteReader(connection, null, commandType, commandText, commandParameters, SqlConnectionOwnership.External);
         }
 
         /// <summary>
@@ -963,7 +934,7 @@ namespace DailyProcessingJobs.Data
         public static SqlDataReader ExecuteReader(SqlConnection connection, string spName, params object[] parameterValues)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -974,11 +945,8 @@ namespace DailyProcessingJobs.Data
 
                 return ExecuteReader(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteReader(connection, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteReader(connection, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -995,7 +963,7 @@ namespace DailyProcessingJobs.Data
         public static SqlDataReader ExecuteReader(SqlTransaction transaction, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteReader(transaction, commandType, commandText, (SqlParameter[])null);
+            return ExecuteReader(transaction, commandType, commandText, null);
         }
 
         /// <summary>
@@ -1039,7 +1007,7 @@ namespace DailyProcessingJobs.Data
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1050,11 +1018,8 @@ namespace DailyProcessingJobs.Data
 
                 return ExecuteReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteReader(transaction, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteReader(transaction, CommandType.StoredProcedure, spName);
         }
 
         #endregion ExecuteReader
@@ -1076,7 +1041,7 @@ namespace DailyProcessingJobs.Data
         public static object ExecuteScalar(string connectionString, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteScalar(connectionString, commandType, commandText, (SqlParameter[])null);
+            return ExecuteScalar(connectionString, commandType, commandText, null);
         }
 
         /// <summary>
@@ -1094,9 +1059,9 @@ namespace DailyProcessingJobs.Data
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
         public static object ExecuteScalar(string connectionString, CommandType commandType, string commandText, params SqlParameter[] commandParameters)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
             // Create & open a SqlConnection, and dispose of it after we are done
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -1122,8 +1087,8 @@ namespace DailyProcessingJobs.Data
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
         public static object ExecuteScalar(string connectionString, string spName, params object[] parameterValues)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1137,11 +1102,8 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -1158,7 +1120,7 @@ namespace DailyProcessingJobs.Data
         public static object ExecuteScalar(SqlConnection connection, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteScalar(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteScalar(connection, commandType, commandText, null);
         }
 
         /// <summary>
@@ -1179,10 +1141,10 @@ namespace DailyProcessingJobs.Data
             if (connection == null) throw new ArgumentNullException("connection");
 
             // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
+            var cmd = new SqlCommand();
 
-            bool mustCloseConnection = false;
-            PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
+            bool mustCloseConnection;
+            PrepareCommand(cmd, connection, null, commandType, commandText, commandParameters, out mustCloseConnection);
 
             // Execute the command & return the results
             object retval = cmd.ExecuteScalar();
@@ -1214,7 +1176,7 @@ namespace DailyProcessingJobs.Data
         public static object ExecuteScalar(SqlConnection connection, string spName, params object[] parameterValues)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1228,11 +1190,8 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteScalar(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteScalar(connection, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteScalar(connection, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -1249,7 +1208,7 @@ namespace DailyProcessingJobs.Data
         public static object ExecuteScalar(SqlTransaction transaction, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteScalar(transaction, commandType, commandText, (SqlParameter[])null);
+            return ExecuteScalar(transaction, commandType, commandText, null);
         }
 
         /// <summary>
@@ -1271,8 +1230,8 @@ namespace DailyProcessingJobs.Data
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
             // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
-            bool mustCloseConnection = false;
+            var cmd = new SqlCommand();
+            bool mustCloseConnection;
             PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
 
             // Execute the command & return the results
@@ -1302,7 +1261,7 @@ namespace DailyProcessingJobs.Data
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1316,11 +1275,8 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteScalar(transaction, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteScalar(transaction, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteScalar(transaction, CommandType.StoredProcedure, spName);
         }
 
         #endregion ExecuteScalar
@@ -1340,7 +1296,7 @@ namespace DailyProcessingJobs.Data
         public static XmlReader ExecuteXmlReader(SqlConnection connection, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteXmlReader(connection, commandType, commandText, (SqlParameter[])null);
+            return ExecuteXmlReader(connection, commandType, commandText, null);
         }
 
         /// <summary>
@@ -1362,10 +1318,10 @@ namespace DailyProcessingJobs.Data
 
             bool mustCloseConnection = false;
             // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
+            var cmd = new SqlCommand();
             try
             {
-                PrepareCommand(cmd, connection, (SqlTransaction)null, commandType, commandText, commandParameters, out mustCloseConnection);
+                PrepareCommand(cmd, connection, null, commandType, commandText, commandParameters, out mustCloseConnection);
 
                 // Create the DataAdapter & DataSet
                 XmlReader retval = cmd.ExecuteXmlReader();
@@ -1401,7 +1357,7 @@ namespace DailyProcessingJobs.Data
         public static XmlReader ExecuteXmlReader(SqlConnection connection, string spName, params object[] parameterValues)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1415,11 +1371,8 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -1436,7 +1389,7 @@ namespace DailyProcessingJobs.Data
         public static XmlReader ExecuteXmlReader(SqlTransaction transaction, CommandType commandType, string commandText)
         {
             // Pass through the call providing null for the set of SqlParameters
-            return ExecuteXmlReader(transaction, commandType, commandText, (SqlParameter[])null);
+            return ExecuteXmlReader(transaction, commandType, commandText, null);
         }
 
         /// <summary>
@@ -1458,8 +1411,8 @@ namespace DailyProcessingJobs.Data
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
 
             // Create a command and prepare it for execution
-            SqlCommand cmd = new SqlCommand();
-            bool mustCloseConnection = false;
+            var cmd = new SqlCommand();
+            bool mustCloseConnection;
             PrepareCommand(cmd, transaction.Connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
 
             // Create the DataAdapter & DataSet
@@ -1489,7 +1442,7 @@ namespace DailyProcessingJobs.Data
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1503,11 +1456,8 @@ namespace DailyProcessingJobs.Data
                 // Call the overload that takes an array of SqlParameters
                 return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                // Otherwise we can just call the SP without params
-                return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName);
-            }
+            // Otherwise we can just call the SP without params
+            return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName);
         }
 
         #endregion ExecuteXmlReader
@@ -1529,11 +1479,11 @@ namespace DailyProcessingJobs.Data
         /// by a user defined name (probably the actual table name)</param>
         public static void FillDataset(string connectionString, CommandType commandType, string commandText, DataSet dataSet, string[] tableNames)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
             if (dataSet == null) throw new ArgumentNullException("dataSet");
 
             // Create & open a SqlConnection, and dispose of it after we are done
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -1562,10 +1512,10 @@ namespace DailyProcessingJobs.Data
             string commandText, DataSet dataSet, string[] tableNames,
             params SqlParameter[] commandParameters)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
             if (dataSet == null) throw new ArgumentNullException("dataSet");
             // Create & open a SqlConnection, and dispose of it after we are done
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -1596,10 +1546,10 @@ namespace DailyProcessingJobs.Data
             DataSet dataSet, string[] tableNames,
             params object[] parameterValues)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
             if (dataSet == null) throw new ArgumentNullException("dataSet");
             // Create & open a SqlConnection, and dispose of it after we are done
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 connection.Open();
 
@@ -1681,7 +1631,7 @@ namespace DailyProcessingJobs.Data
         {
             if (connection == null) throw new ArgumentNullException("connection");
             if (dataSet == null) throw new ArgumentNullException("dataSet");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1777,7 +1727,7 @@ namespace DailyProcessingJobs.Data
             if (transaction == null) throw new ArgumentNullException("transaction");
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
             if (dataSet == null) throw new ArgumentNullException("dataSet");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If we receive parameter values, we need to figure out where they go
             if ((parameterValues != null) && (parameterValues.Length > 0))
@@ -1829,12 +1779,12 @@ namespace DailyProcessingJobs.Data
             if (dataSet == null) throw new ArgumentNullException("dataSet");
 
             // Create a command and prepare it for execution
-            SqlCommand command = new SqlCommand();
-            bool mustCloseConnection = false;
+            var command = new SqlCommand();
+            bool mustCloseConnection;
             PrepareCommand(command, connection, transaction, commandType, commandText, commandParameters, out mustCloseConnection);
 
             // Create the DataAdapter & DataSet
-            using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+            using (var dataAdapter = new SqlDataAdapter(command))
             {
 
                 // Add the table mappings specified by the user
@@ -1879,10 +1829,10 @@ namespace DailyProcessingJobs.Data
             if (insertCommand == null) throw new ArgumentNullException("insertCommand");
             if (deleteCommand == null) throw new ArgumentNullException("deleteCommand");
             if (updateCommand == null) throw new ArgumentNullException("updateCommand");
-            if (tableName == null || tableName.Length == 0) throw new ArgumentNullException("tableName");
+            if (string.IsNullOrEmpty(tableName)) throw new ArgumentNullException("tableName");
 
             // Create a SqlDataAdapter, and dispose of it after we are done
-            using (SqlDataAdapter dataAdapter = new SqlDataAdapter())
+            using (var dataAdapter = new SqlDataAdapter())
             {
                 // Set the data adapter commands
                 dataAdapter.UpdateCommand = updateCommand;
@@ -1914,11 +1864,10 @@ namespace DailyProcessingJobs.Data
         public static SqlCommand CreateCommand(SqlConnection connection, string spName, params string[] sourceColumns)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // Create a SqlCommand
-            SqlCommand cmd = new SqlCommand(spName, connection);
-            cmd.CommandType = CommandType.StoredProcedure;
+            var cmd = new SqlCommand(spName, connection) {CommandType = CommandType.StoredProcedure};
 
             // If we receive parameter values, we need to figure out where they go
             if ((sourceColumns != null) && (sourceColumns.Length > 0))
@@ -1951,8 +1900,8 @@ namespace DailyProcessingJobs.Data
         /// <returns>An int representing the number of rows affected by the command</returns>
         public static int ExecuteNonQueryTypedParams(String connectionString, String spName, DataRow dataRow)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -1963,12 +1912,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteNonQuery(connectionString, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -1984,7 +1930,7 @@ namespace DailyProcessingJobs.Data
         public static int ExecuteNonQueryTypedParams(SqlConnection connection, String spName, DataRow dataRow)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -1995,12 +1941,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteNonQuery(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteNonQuery(connection, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteNonQuery(connection, CommandType.StoredProcedure, spName);
         }
 
         ///// <summary>
@@ -2050,8 +1993,8 @@ namespace DailyProcessingJobs.Data
         /// <returns>A dataset containing the resultset generated by the command</returns>
         public static DataSet ExecuteDatasetTypedParams(string connectionString, String spName, DataRow dataRow)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             //If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2062,12 +2005,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteDataset(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteDataset(connectionString, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteDataset(connectionString, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteDataset(connectionString, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -2083,7 +2023,7 @@ namespace DailyProcessingJobs.Data
         public static DataSet ExecuteDatasetTypedParams(SqlConnection connection, String spName, DataRow dataRow)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2094,12 +2034,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteDataset(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteDataset(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteDataset(connection, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteDataset(connection, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -2116,7 +2053,7 @@ namespace DailyProcessingJobs.Data
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2127,12 +2064,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteDataset(transaction, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteDataset(transaction, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteDataset(transaction, CommandType.StoredProcedure, spName);
         }
 
         #endregion
@@ -2150,8 +2084,8 @@ namespace DailyProcessingJobs.Data
         /// <returns>A SqlDataReader containing the resultset generated by the command</returns>
         public static SqlDataReader ExecuteReaderTypedParams(String connectionString, String spName, DataRow dataRow)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2162,12 +2096,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteReader(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteReader(connectionString, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteReader(connectionString, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteReader(connectionString, CommandType.StoredProcedure, spName);
         }
 
 
@@ -2184,7 +2115,7 @@ namespace DailyProcessingJobs.Data
         public static SqlDataReader ExecuteReaderTypedParams(SqlConnection connection, String spName, DataRow dataRow)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2195,12 +2126,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteReader(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteReader(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteReader(connection, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteReader(connection, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -2217,7 +2145,7 @@ namespace DailyProcessingJobs.Data
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2228,12 +2156,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteReader(transaction, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteReader(transaction, CommandType.StoredProcedure, spName);
         }
         #endregion
 
@@ -2250,8 +2175,8 @@ namespace DailyProcessingJobs.Data
         /// <returns>An object containing the value in the 1x1 resultset generated by the command</returns>
         public static object ExecuteScalarTypedParams(String connectionString, String spName, DataRow dataRow)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2262,12 +2187,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteScalar(connectionString, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteScalar(connectionString, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -2283,7 +2205,7 @@ namespace DailyProcessingJobs.Data
         public static object ExecuteScalarTypedParams(SqlConnection connection, String spName, DataRow dataRow)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2294,12 +2216,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteScalar(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteScalar(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteScalar(connection, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteScalar(connection, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -2316,7 +2235,7 @@ namespace DailyProcessingJobs.Data
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2327,12 +2246,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteScalar(transaction, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteScalar(transaction, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteScalar(transaction, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteScalar(transaction, CommandType.StoredProcedure, spName);
         }
         #endregion
 
@@ -2350,7 +2266,7 @@ namespace DailyProcessingJobs.Data
         public static XmlReader ExecuteXmlReaderTypedParams(SqlConnection connection, String spName, DataRow dataRow)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2361,12 +2277,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteXmlReader(connection, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteXmlReader(connection, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteXmlReader(connection, CommandType.StoredProcedure, spName);
         }
 
         /// <summary>
@@ -2383,7 +2296,7 @@ namespace DailyProcessingJobs.Data
         {
             if (transaction == null) throw new ArgumentNullException("transaction");
             if (transaction != null && transaction.Connection == null) throw new ArgumentException("The transaction was rollbacked or commited, please provide an open transaction.", "transaction");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             // If the row has values, the store procedure parameters must be initialized
             if (dataRow != null && dataRow.ItemArray.Length > 0)
@@ -2394,12 +2307,9 @@ namespace DailyProcessingJobs.Data
                 // Set the parameters values
                 AssignParameterValues(commandParameters, dataRow);
 
-                return SqlDataHelper.ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
+                return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName, commandParameters);
             }
-            else
-            {
-                return SqlDataHelper.ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName);
-            }
+            return ExecuteXmlReader(transaction, CommandType.StoredProcedure, spName);
         }
         #endregion
 
@@ -2409,15 +2319,14 @@ namespace DailyProcessingJobs.Data
     /// SqlHelperParameterCache provides functions to leverage a static cache of procedure parameters, and the
     /// ability to discover parameters for stored procedures at run-time.
     /// </summary>
-    public sealed class SqlHelperParameterCache
+    public static class SqlHelperParameterCache
     {
         #region private methods, variables, and constructors
 
         //Since this class provides only static methods, make the default constructor private to prevent 
         //instances from being created with "new SqlHelperParameterCache()"
-        private SqlHelperParameterCache() { }
 
-        private static Hashtable paramCache = Hashtable.Synchronized(new Hashtable());
+        private static readonly Hashtable ParamCache = Hashtable.Synchronized(new Hashtable());
 
         /// <summary>
         /// Resolve at run time the appropriate set of SqlParameters for a stored procedure
@@ -2429,10 +2338,9 @@ namespace DailyProcessingJobs.Data
         private static SqlParameter[] DiscoverSpParameterSet(SqlConnection connection, string spName, bool includeReturnValueParameter)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
-            SqlCommand cmd = new SqlCommand(spName, connection);
-            cmd.CommandType = CommandType.StoredProcedure;
+            var cmd = new SqlCommand(spName, connection) {CommandType = CommandType.StoredProcedure};
 
             connection.Open();
             SqlCommandBuilder.DeriveParameters(cmd);
@@ -2443,7 +2351,7 @@ namespace DailyProcessingJobs.Data
                 cmd.Parameters.RemoveAt(0);
             }
 
-            SqlParameter[] discoveredParameters = new SqlParameter[cmd.Parameters.Count];
+            var discoveredParameters = new SqlParameter[cmd.Parameters.Count];
 
             cmd.Parameters.CopyTo(discoveredParameters, 0);
 
@@ -2462,7 +2370,7 @@ namespace DailyProcessingJobs.Data
         /// <returns></returns>
         private static SqlParameter[] CloneParameters(SqlParameter[] originalParameters)
         {
-            SqlParameter[] clonedParameters = new SqlParameter[originalParameters.Length];
+            var clonedParameters = new SqlParameter[originalParameters.Length];
 
             for (int i = 0, j = originalParameters.Length; i < j; i++)
             {
@@ -2484,12 +2392,12 @@ namespace DailyProcessingJobs.Data
         /// <param name="commandParameters">An array of SqlParamters to be cached</param>
         public static void CacheParameterSet(string connectionString, string commandText, params SqlParameter[] commandParameters)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(commandText)) throw new ArgumentNullException("commandText");
 
             string hashKey = connectionString + ":" + commandText;
 
-            paramCache[hashKey] = commandParameters;
+            ParamCache[hashKey] = commandParameters;
         }
 
         /// <summary>
@@ -2500,20 +2408,17 @@ namespace DailyProcessingJobs.Data
         /// <returns>An array of SqlParamters</returns>
         public static SqlParameter[] GetCachedParameterSet(string connectionString, string commandText)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (commandText == null || commandText.Length == 0) throw new ArgumentNullException("commandText");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(commandText)) throw new ArgumentNullException("commandText");
 
             string hashKey = connectionString + ":" + commandText;
 
-            SqlParameter[] cachedParameters = paramCache[hashKey] as SqlParameter[];
+            var cachedParameters = ParamCache[hashKey] as SqlParameter[];
             if (cachedParameters == null)
             {
                 return null;
             }
-            else
-            {
-                return CloneParameters(cachedParameters);
-            }
+            return CloneParameters(cachedParameters);
         }
 
         #endregion caching functions
@@ -2546,10 +2451,10 @@ namespace DailyProcessingJobs.Data
         /// <returns>An array of SqlParameters</returns>
         public static SqlParameter[] GetSpParameterSet(string connectionString, string spName, bool includeReturnValueParameter)
         {
-            if (connectionString == null || connectionString.Length == 0) throw new ArgumentNullException("connectionString");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(connectionString)) throw new ArgumentNullException("connectionString");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (var connection = new SqlConnection(connectionString))
             {
                 return GetSpParameterSetInternal(connection, spName, includeReturnValueParameter);
             }
@@ -2582,7 +2487,7 @@ namespace DailyProcessingJobs.Data
         internal static SqlParameter[] GetSpParameterSet(SqlConnection connection, string spName, bool includeReturnValueParameter)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            using (SqlConnection clonedConnection = (SqlConnection)((ICloneable)connection).Clone())
+            using (var clonedConnection = (SqlConnection)((ICloneable)connection).Clone())
             {
                 return GetSpParameterSetInternal(clonedConnection, spName, includeReturnValueParameter);
             }
@@ -2598,17 +2503,15 @@ namespace DailyProcessingJobs.Data
         private static SqlParameter[] GetSpParameterSetInternal(SqlConnection connection, string spName, bool includeReturnValueParameter)
         {
             if (connection == null) throw new ArgumentNullException("connection");
-            if (spName == null || spName.Length == 0) throw new ArgumentNullException("spName");
+            if (string.IsNullOrEmpty(spName)) throw new ArgumentNullException("spName");
 
             string hashKey = connection.ConnectionString + ":" + spName + (includeReturnValueParameter ? ":include ReturnValue Parameter" : "");
 
-            SqlParameter[] cachedParameters;
-
-            cachedParameters = paramCache[hashKey] as SqlParameter[];
+            var cachedParameters = ParamCache[hashKey] as SqlParameter[];
             if (cachedParameters == null)
             {
                 SqlParameter[] spParameters = DiscoverSpParameterSet(connection, spName, includeReturnValueParameter);
-                paramCache[hashKey] = spParameters;
+                ParamCache[hashKey] = spParameters;
                 cachedParameters = spParameters;
             }
 

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace DailyProcessingJobs.Model
 {
@@ -15,7 +14,7 @@ namespace DailyProcessingJobs.Model
             }
         }
 
-        private Dictionary<string, object> _values = new Dictionary<string,object>();
+        private readonly Dictionary<string, object> _values = new Dictionary<string,object>();
 
         public object this[int index]
         {
@@ -23,24 +22,20 @@ namespace DailyProcessingJobs.Model
             {
                 if (Columns.Count < index)
                 {
-                    throw new ArgumentOutOfRangeException("Index must be less than the size of the collection.");
+                    throw new ArgumentOutOfRangeException("index");
                 }
-                else
-                {
-                    return _values[Columns[index]];
-                }
+                
+                return _values[Columns[index]];
             }
 
             set
             {
                 if (Columns.Count < index)
                 {
-                    throw new ArgumentOutOfRangeException("Index must be less than the size of the collection.");
+                    throw new ArgumentOutOfRangeException("index");
                 }
-                else
-                {
-                    _values[Columns[index]] = value;
-                }
+
+                _values[Columns[index]] = value;
             }
         }
 
@@ -52,7 +47,8 @@ namespace DailyProcessingJobs.Model
                 {
                     return _values[key];
                 }
-                else return null;
+
+                return null;
             }
 
             set

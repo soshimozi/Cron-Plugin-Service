@@ -42,7 +42,7 @@
             this.startButton.TabIndex = 0;
             this.startButton.Text = "Start";
             this.startButton.UseVisualStyleBackColor = true;
-            this.startButton.Click += new System.EventHandler(this.startButton_Click);
+            this.startButton.Click += new System.EventHandler(this.StartButtonClick);
             // 
             // pauseButton
             // 
@@ -52,7 +52,7 @@
             this.pauseButton.TabIndex = 1;
             this.pauseButton.Text = "Pause";
             this.pauseButton.UseVisualStyleBackColor = true;
-            this.pauseButton.Click += new System.EventHandler(this.pauseButton_Click);
+            this.pauseButton.Click += new System.EventHandler(this.PauseButtonClick);
             // 
             // resumeButton
             // 
@@ -62,7 +62,7 @@
             this.resumeButton.TabIndex = 2;
             this.resumeButton.Text = "Resume";
             this.resumeButton.UseVisualStyleBackColor = true;
-            this.resumeButton.Click += new System.EventHandler(this.resumeButton_Click);
+            this.resumeButton.Click += new System.EventHandler(this.ResumeButtonClick);
             // 
             // stopButton
             // 
@@ -72,7 +72,7 @@
             this.stopButton.TabIndex = 3;
             this.stopButton.Text = "Stop";
             this.stopButton.UseVisualStyleBackColor = true;
-            this.stopButton.Click += new System.EventHandler(this.stopButton_Click);
+            this.stopButton.Click += new System.EventHandler(this.StopButtonClick);
             // 
             // ServiceControlForm
             // 

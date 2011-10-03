@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Net.Mail;
-using System.Configuration;
-using System.Net;
 using log4net;
 using System.Reflection;
 
@@ -16,9 +11,9 @@ namespace CronPluginService.Framework.Communication
     /// </summary>
     public class CommunicationManager
     {
-        private static CommunicationManager _instance = null;
+        private static CommunicationManager _instance;
 
-        private static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         /// <summary>
         /// Gets the instance.
@@ -27,12 +22,7 @@ namespace CronPluginService.Framework.Communication
         {
             get
             {
-                if (_instance == null)
-                {
-                    _instance = new CommunicationManager();
-                }
-
-                return _instance;
+                return _instance ?? (_instance = new CommunicationManager());
             }
         }
 
@@ -45,7 +35,7 @@ namespace CronPluginService.Framework.Communication
         /// <returns></returns>
         public MailMessage BuildMessage(string[] recipients, string subject, string body)
         {
-            MailMessage message = new MailMessage();
+            var message = new MailMessage();
             foreach (string recipient in recipients)
             {
                 message.To.Add(new MailAddress(recipient));
@@ -83,7 +73,7 @@ namespace CronPluginService.Framework.Communication
             //string smtpEnableSSL = ConfigurationManager.AppSettings.Get("SMTP Enable SSL");
 
             // use default instantiation to read from web.config
-            SmtpClient smtp = new SmtpClient();
+            var smtp = new SmtpClient();
             
             //bool enableSSL;
             //if( !bool.TryParse(smtpEnableSSL, out enableSSL) )
@@ -97,7 +87,7 @@ namespace CronPluginService.Framework.Communication
             {
                 smtp.Send(mail);
             }
-            catch (System.Net.Mail.SmtpException ex1)
+            catch (SmtpException ex1)
             {
                 Log.Error(ex1.ToString());
                 //     The connection to the SMTP server failed.  -or- Authentication failed.  -or-

@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace DailyProcessingJobs.Model
 {
     public class Report
     {
-        private List<string> _columNames = new List<string>();
+        private readonly List<string> _columNames = new List<string>();
 
         public void AddColumn(string columnName)
         {

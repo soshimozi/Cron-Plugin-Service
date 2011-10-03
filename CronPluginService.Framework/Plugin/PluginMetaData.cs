@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.ComponentModel.Composition;
-using CronPluginService.Framework.Scheduling;
 
 namespace CronPluginService.Framework.Plugin
 {
@@ -15,9 +11,9 @@ namespace CronPluginService.Framework.Plugin
         {
         }
 
-        public PluginMetaData(string JobKey) : base(typeof(IPluginJob))
+        public PluginMetaData(string jobKey) : base(typeof(IPluginJob))
         {
-            this.JobKey = JobKey;
+            JobKey = jobKey;
         }
 
         #region IPluginMetaData Members

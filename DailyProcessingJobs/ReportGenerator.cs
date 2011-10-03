@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using DailyProcessingJobs.Model;
 using DocumentFormat.OpenXml.Packaging;
 
@@ -18,7 +15,7 @@ namespace DailyProcessingJobs
         )
         {
             // Open the document for editing.
-            using (SpreadsheetDocument spreadSheet = WorkbookHelper.OpenOrCreateWorkbook(workbookPath, worksheetName))
+            using (SpreadsheetDocument spreadSheet = WorkbookHelper.OpenOrCreateWorkbook(workbookPath))
             {
                 if (WorkbookHelper.IsWorksheetPresent(spreadSheet.WorkbookPart, worksheetName))
                 {

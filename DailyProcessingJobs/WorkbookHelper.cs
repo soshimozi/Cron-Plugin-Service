@@ -1,20 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Reflection;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Spreadsheet;
-using System.Data.SqlClient;
-using DailyProcessingJobs.Model;
 using System.IO;
 
 namespace DailyProcessingJobs
 {
     public static class WorkbookHelper
     {
-        private static SpreadsheetDocument CreateWorkbook(string path, string worksheet)
+        private static SpreadsheetDocument CreateWorkbook(string path)
         {
             // Create a spreadsheet document by supplying the filepath.
             // By default, AutoSave = true, Editable = true, and Type = xlsx.
@@ -26,22 +22,12 @@ namespace DailyProcessingJobs
             workbookpart.Workbook = new Workbook();
 
             // Add a WorksheetPart to the WorkbookPart.
-            WorksheetPart worksheetPart = workbookpart.AddNewPart<WorksheetPart>();
+            var worksheetPart = workbookpart.AddNewPart<WorksheetPart>();
             worksheetPart.Worksheet = new Worksheet(new SheetData());
 
             // Add Sheets to the Workbook.
-            Sheets sheets = spreadsheetDocument.WorkbookPart.Workbook.
-                AppendChild<Sheets>(new Sheets());
-
-            //// Append a new worksheet and associate it with the workbook.
-            //Sheet sheet = new Sheet()
-            //{
-            //    Id = spreadsheetDocument.WorkbookPart.
-            //        GetIdOfPart(worksheetPart),
-            //    SheetId = 1,
-            //    Name = worksheet
-            //};
-            //sheets.Append(sheet);
+            spreadsheetDocument.WorkbookPart.Workbook.
+                AppendChild(new Sheets());
 
             return spreadsheetDocument;
         }
@@ -52,36 +38,28 @@ namespace DailyProcessingJobs
             var sheets = workbookPart.Workbook.Sheets;
 
             // For each sheet, display the sheet information.
-            foreach (var element in sheets)
-            {
-                Sheet sheet = element as Sheet;
-                if (sheet.Name == sheetName)
-                    return true;
-            }
-
-            return false;
+            return sheets.
+                Select(element => element as Sheet).
+                Any(sheet => sheet != null && sheet.Name == sheetName);
         }
 
         public static void DeleteWorksheet(WorkbookPart workbookPart, string sheetName)
         {
-            string Sheetid = "";
+            //string sheetid = "";
 
             // Get the pivot Table Parts
             IEnumerable<PivotTableCacheDefinitionPart> pvtTableCacheParts = workbookPart.PivotTableCacheDefinitionParts;
-            Dictionary<PivotTableCacheDefinitionPart, string> pvtTableCacheDefinationPart = new Dictionary<PivotTableCacheDefinitionPart, string>();
-            foreach (PivotTableCacheDefinitionPart Item in pvtTableCacheParts)
+            var pvtTableCacheDefinationPart = 
+                (from pivotTableCacheDefinitionPart in pvtTableCacheParts 
+                 let pvtCacheDef = pivotTableCacheDefinitionPart.PivotCacheDefinition 
+                 let pvtCache = pvtCacheDef.Descendants<CacheSource>().
+                 Where(s => s.WorksheetSource.Sheet == sheetName) 
+                 where pvtCache.Count() > 0 select pivotTableCacheDefinitionPart).
+                 ToDictionary(pivotTableCacheDefinitionPart => pivotTableCacheDefinitionPart, pivotTableCacheDefinitionPart => pivotTableCacheDefinitionPart.ToString());
+
+            foreach (var item in pvtTableCacheDefinationPart)
             {
-                PivotCacheDefinition pvtCacheDef = Item.PivotCacheDefinition;
-                //Check if this CacheSource is linked to SheetToDelete
-                var pvtCahce = pvtCacheDef.Descendants<CacheSource>().Where(s => s.WorksheetSource.Sheet == sheetName);
-                if (pvtCahce.Count() > 0)
-                {
-                    pvtTableCacheDefinationPart.Add(Item, Item.ToString());
-                }
-            }
-            foreach (var Item in pvtTableCacheDefinationPart)
-            {
-                workbookPart.DeletePart(Item.Key);
+                workbookPart.DeletePart(item.Key);
             }
 
             //Get the SheetToDelete from workbook.xml
@@ -93,10 +71,10 @@ namespace DailyProcessingJobs
             }
 
             //Store the SheetID for the reference
-            Sheetid = sheet.SheetId;
+            var sheetid = sheet.SheetId;
 
             // Remove the sheet reference from the workbook.
-            WorksheetPart worksheetPart = (WorksheetPart)(workbookPart.GetPartById(sheet.Id));
+            var worksheetPart = (WorksheetPart)(workbookPart.GetPartById(sheet.Id));
             sheet.Remove();
 
             // Delete the worksheet part.
@@ -106,11 +84,11 @@ namespace DailyProcessingJobs
             var definedNames = workbookPart.Workbook.Descendants<DefinedNames>().FirstOrDefault();
             if (definedNames != null)
             {
-                foreach (DefinedName Item in definedNames)
+                foreach (DefinedName item in definedNames)
                 {
                     // This condition checks to delete only those names which are part of Sheet in question
-                    if (Item.Text.Contains(sheetName + "!"))
-                        Item.Remove();
+                    if (item.Text.Contains(sheetName + "!"))
+                        item.Remove();
                 }
             }
 
@@ -118,15 +96,15 @@ namespace DailyProcessingJobs
             //Note: An instance of this part type contains an ordered set of references to all cells in all worksheets in the 
             //workbook whose value is calculated from any formula
 
-            CalculationChainPart calChainPart;
-            calChainPart = workbookPart.CalculationChainPart;
+            CalculationChainPart calChainPart = workbookPart.CalculationChainPart;
             if (calChainPart != null)
             {
-                var calChainEntries = calChainPart.CalculationChain.Descendants<CalculationCell>().Where(c => c.SheetId == Sheetid);
-                foreach (CalculationCell Item in calChainEntries)
+                var calChainEntries = calChainPart.CalculationChain.Descendants<CalculationCell>().Where(c => (uint)c.SheetId.Value == sheetid);
+                foreach (CalculationCell item in calChainEntries)
                 {
-                    Item.Remove();
+                    item.Remove();
                 }
+
                 if (calChainPart.CalculationChain.Count() == 0)
                 {
                     workbookPart.DeletePart(calChainPart);
@@ -135,60 +113,52 @@ namespace DailyProcessingJobs
 
         }
 
-        private static void AddTextToWorkSheet(string path, string sheetName, string text, string columnName, uint rowIndex)
-        {
-            // Open the document for editing.
-            using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(path, true))
-            {
-                // Get the SharedStringTablePart. If it does not exist, create a new one.
-                SharedStringTablePart shareStringPart;
-                if (spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0)
-                {
-                    shareStringPart = spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
-                }
-                else
-                {
-                    shareStringPart = spreadSheet.WorkbookPart.AddNewPart<SharedStringTablePart>();
-                }
+        //private static void AddTextToWorkSheet(string path, string sheetName, string text, string columnName, uint rowIndex)
+        //{
+        //    // Open the document for editing.
+        //    using (SpreadsheetDocument spreadSheet = SpreadsheetDocument.Open(path, true))
+        //    {
+        //        // Get the SharedStringTablePart. If it does not exist, create a new one.
+        //        SharedStringTablePart shareStringPart;
+        //        if (spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0)
+        //        {
+        //            shareStringPart = spreadSheet.WorkbookPart.GetPartsOfType<SharedStringTablePart>().First();
+        //        }
+        //        else
+        //        {
+        //            shareStringPart = spreadSheet.WorkbookPart.AddNewPart<SharedStringTablePart>();
+        //        }
 
-                // Insert the text into the SharedStringTablePart.
-                int index = InsertSharedStringItem(spreadSheet.WorkbookPart, text);
+        //        // Insert the text into the SharedStringTablePart.
+        //        int index = InsertSharedStringItem(spreadSheet.WorkbookPart, text);
 
-                // Insert a new worksheet.
-                WorksheetPart worksheetPart = InsertWorksheet(spreadSheet.WorkbookPart, sheetName);
+        //        // Insert a new worksheet.
+        //        WorksheetPart worksheetPart = InsertWorksheet(spreadSheet.WorkbookPart, sheetName);
 
-                // Insert cell A1 into the new worksheet.
-                Cell cell = InsertCellInWorksheet(worksheetPart, columnName, rowIndex);
+        //        // Insert cell A1 into the new worksheet.
+        //        Cell cell = InsertCellInWorksheet(worksheetPart, columnName, rowIndex);
 
-                // Set the value of cell A1.
-                cell.CellValue = new CellValue(index.ToString());
-                cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
+        //        // Set the value of cell A1.
+        //        cell.CellValue = new CellValue(index.ToString());
+        //        cell.DataType = new EnumValue<CellValues>(CellValues.SharedString);
 
-                // Save the new worksheet.
-                worksheetPart.Worksheet.Save();
-            }
-        }
+        //        // Save the new worksheet.
+        //        worksheetPart.Worksheet.Save();
+        //    }
+        //}
 
         public static WorksheetPart InsertWorksheet(WorkbookPart workbookPart, string sheetName)
         {
-            Sheet foundSheet = null;
-            foreach (Sheet sheet in workbookPart.Workbook.Sheets)
-            {
-                if (sheet.Name == sheetName)
-                {
-                    foundSheet = sheet;
-                    break;
-                }
-            }
+            Sheet foundSheet = workbookPart.Workbook.Sheets.Cast<Sheet>().FirstOrDefault(sheet => sheet.Name == sheetName);
 
             if (foundSheet == null)
             {
                 // Add a new worksheet part to the workbook.
-                WorksheetPart newWorksheetPart = workbookPart.AddNewPart<WorksheetPart>();
+                var newWorksheetPart = workbookPart.AddNewPart<WorksheetPart>();
                 newWorksheetPart.Worksheet = new Worksheet(new SheetData());
                 newWorksheetPart.Worksheet.Save();
 
-                Sheets sheets = workbookPart.Workbook.GetFirstChild<Sheets>();
+                var sheets = workbookPart.Workbook.GetFirstChild<Sheets>();
                 string relationshipId = workbookPart.GetIdOfPart(newWorksheetPart);
 
                 // Get a unique ID for the new sheet.
@@ -199,14 +169,12 @@ namespace DailyProcessingJobs
                 }
 
                 // Append the new worksheet and associate it with the workbook.
-                Sheet sheet = new Sheet() { Id = relationshipId, SheetId = sheetId, Name = sheetName };
-                sheets.Append(sheet);
+                var sheet = new Sheet { Id = relationshipId, SheetId = sheetId, Name = sheetName };
+                sheets.Append((IEnumerable<OpenXmlElement>)sheet);
                 return newWorksheetPart;
             }
-            else
-            {
-                return (WorksheetPart)workbookPart.GetPartById(foundSheet.Id);
-            }
+
+            return (WorksheetPart)workbookPart.GetPartById(foundSheet.Id);
 
         }
 
@@ -215,7 +183,7 @@ namespace DailyProcessingJobs
         private static Cell InsertCellInWorksheet(WorksheetPart worksheetPart, string columnName, uint rowIndex)
         {
             Worksheet worksheet = worksheetPart.Worksheet;
-            SheetData sheetData = worksheet.GetFirstChild<SheetData>();
+            var sheetData = worksheet.GetFirstChild<SheetData>();
             string cellReference = columnName + rowIndex;
 
             // If the worksheet does not contain a row with the specified row index, insert one.
@@ -226,8 +194,8 @@ namespace DailyProcessingJobs
             }
             else
             {
-                row = new Row() { RowIndex = rowIndex };
-                sheetData.Append(row);
+                row = new Row {RowIndex = rowIndex};
+                sheetData.Append((IEnumerable<OpenXmlElement>) row);
             }
 
             // If there is not a cell with the specified column name, insert one.  
@@ -235,25 +203,18 @@ namespace DailyProcessingJobs
             {
                 return row.Elements<Cell>().Where(c => c.CellReference.Value == cellReference).First();
             }
-            else
-            {
-                // Cells must be in sequential order according to CellReference. Determine where to insert the new cell.
-                Cell refCell = null;
-                foreach (Cell cell in row.Elements<Cell>())
-                {
-                    if (string.Compare(cell.CellReference.Value, cellReference, true) > 0)
-                    {
-                        refCell = cell;
-                        break;
-                    }
-                }
 
-                Cell newCell = new Cell() { CellReference = cellReference };
-                row.InsertBefore(newCell, refCell);
+            // Cells must be in sequential order according to CellReference. Determine where to insert the new cell.
+            var refCell =
+                row.Elements<Cell>().FirstOrDefault(
+                    cell => string.Compare(cell.CellReference.Value, cellReference, true) > 0);
+            var newCell = new Cell {CellReference = cellReference};
+            row.InsertBefore(newCell, refCell);
 
-                return newCell;
-            }
+            return newCell;
         }
+
+
         // Given text and a SharedStringTablePart, creates a SharedStringItem with the specified text 
         // and inserts it into the SharedStringTablePart. If the item already exists, returns its index.
         private static int InsertSharedStringItem(WorkbookPart workbookPart, string text)
@@ -280,7 +241,7 @@ namespace DailyProcessingJobs
             }
 
             // The text does not exist in the part. Create the SharedStringItem and return its index.
-            shareStringPart.SharedStringTable.AppendChild(new SharedStringItem(new DocumentFormat.OpenXml.Spreadsheet.Text(text)));
+            shareStringPart.SharedStringTable.AppendChild(new SharedStringItem(new Text(text)));
 
             return i;
         }
@@ -289,13 +250,12 @@ namespace DailyProcessingJobs
         {
             int dividend = columnNumber;
             string columnName = String.Empty;
-            int modulo;
 
             while (dividend > 0)
             {
-                modulo = (dividend - 1) % 26;
+                int modulo = (dividend - 1) % 26;
                 columnName = Convert.ToChar(65 + modulo).ToString() + columnName;
-                dividend = (int)((dividend - modulo) / 26);
+                dividend = ((dividend - modulo) / 26);
             }
 
             return columnName;
@@ -322,74 +282,54 @@ namespace DailyProcessingJobs
 
         private static SharedStringTablePart GetSharedStringPart(WorkbookPart workbookPart)
         {
-            SharedStringTablePart shareStringPart;
-            if (workbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0)
-            {
-                shareStringPart = workbookPart.GetPartsOfType<SharedStringTablePart>().First();
-            }
-            else
-            {
-                shareStringPart = workbookPart.AddNewPart<SharedStringTablePart>();
-            }
-
-            return shareStringPart;
+            return workbookPart.GetPartsOfType<SharedStringTablePart>().Count() > 0 ? workbookPart.GetPartsOfType<SharedStringTablePart>().First() : workbookPart.AddNewPart<SharedStringTablePart>();
         }
 
         // Adds child parts and generates content of the specified part.
         public static void CreateTable(WorkbookPart workbookPart, WorksheetPart worksheetPart, string[] columns, int topLeftColumn, int topLeftRow, int width, int height)
         {
-            uint maxTableId = 0;
-
             List<WorksheetPart> worksheets = workbookPart.GetPartsOfType<WorksheetPart>().ToList();
-            foreach (WorksheetPart ws in worksheets)
-            {
-                // get table parts
-                List<TableDefinitionPart> tableDefinitions = ws.TableDefinitionParts.ToList();
-                foreach (TableDefinitionPart tableDef in tableDefinitions)
-                {
-                    maxTableId = Math.Max(tableDef.Table.Id, maxTableId);
-                }
-            }
+            uint maxTableId = worksheets.Select(ws => ws.TableDefinitionParts.ToList()).SelectMany(tableDefinitions => tableDefinitions).Aggregate<TableDefinitionPart, uint>(0, (current, tableDef) => Math.Max(tableDef.Table.Id, current));
 
             uint tableId = maxTableId + 1;
 
-            TableParts tables = new TableParts() { Count = (UInt32Value)1U };
-            worksheetPart.Worksheet.Append(tables);
+            var tables = new TableParts { Count = 1U };
+            worksheetPart.Worksheet.Append((IEnumerable<OpenXmlElement>)tables);
 
-            TableDefinitionPart newTableDefnPart = worksheetPart.AddNewPart<TableDefinitionPart>();
+            var newTableDefnPart = worksheetPart.AddNewPart<TableDefinitionPart>();
             string relationshipId = worksheetPart.GetIdOfPart(newTableDefnPart);
 
             string cellReference = string.Format("{0}{1}:{2}{3}", GetColumnIdentifier(topLeftColumn), topLeftRow, GetColumnIdentifier(topLeftColumn + width - 1), topLeftRow + height);
-            Table table1 = new Table() { Id = tableId, Name = "Table" + relationshipId, DisplayName = "Table" + relationshipId, Reference = cellReference, TotalsRowShown = false };
-            AutoFilter autoFilter1 = new AutoFilter() { Reference = cellReference };
+            var table1 = new Table { Id = tableId, Name = "Table" + relationshipId, DisplayName = "Table" + relationshipId, Reference = cellReference, TotalsRowShown = false };
+            var autoFilter1 = new AutoFilter { Reference = cellReference };
 
-            TableColumns tableColumns1 = new TableColumns() { Count = (UInt32Value)(uint)columns.Length };
+            var tableColumns1 = new TableColumns { Count = (uint)columns.Length };
             for (int iColumn = 0; iColumn < columns.Length; iColumn++)
             {
-                TableColumn tableColumn = new TableColumn() { Id = (UInt32Value)(uint)iColumn + 1, Name = columns[iColumn] };
-                tableColumns1.Append(tableColumn);
+                var tableColumn = new TableColumn { Id = (UInt32Value)(uint)iColumn + 1, Name = columns[iColumn] };
+                tableColumns1.Append((IEnumerable<OpenXmlElement>)tableColumn);
             }
-            TableStyleInfo tableStyleInfo1 = new TableStyleInfo() { Name = "TableStyleMedium2", ShowFirstColumn = false, ShowLastColumn = false, ShowRowStripes = true, ShowColumnStripes = false };
+            var tableStyleInfo1 = new TableStyleInfo { Name = "TableStyleMedium2", ShowFirstColumn = false, ShowLastColumn = false, ShowRowStripes = true, ShowColumnStripes = false };
 
-            table1.Append(autoFilter1);
-            table1.Append(tableColumns1);
-            table1.Append(tableStyleInfo1);
+            table1.Append((IEnumerable<OpenXmlElement>)autoFilter1);
+            table1.Append((IEnumerable<OpenXmlElement>)tableColumns1);
+            table1.Append((IEnumerable<OpenXmlElement>)tableStyleInfo1);
 
             newTableDefnPart.Table = table1;
 
-            TablePart table = new TablePart() { Id = relationshipId };
-            tables.Append(table);
+            var table = new TablePart { Id = relationshipId };
+            tables.Append((IEnumerable<OpenXmlElement>)table);
 
             //TableStyles tableStyles1 = new TableStyles() { Count = (UInt32Value)0U, DefaultTableStyle = "TableStyleMedium2", DefaultPivotStyle = "PivotStyleMedium9" };
             //worksheetPart.Worksheet.Append(tableStyles1);
         }
 
-        public static SpreadsheetDocument OpenOrCreateWorkbook(string workbookPath, string defaultWorksheet)
+        public static SpreadsheetDocument OpenOrCreateWorkbook(string workbookPath)
         {
-            if( File.Exists(workbookPath))
+            if (File.Exists(workbookPath))
                 return SpreadsheetDocument.Open(workbookPath, true);
-            else
-                return CreateWorkbook(workbookPath, defaultWorksheet);
+
+            return CreateWorkbook(workbookPath);
         }
     }
 }

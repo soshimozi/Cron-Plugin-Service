@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using CronPluginService.Framework.Utility;
 using System.Data.SqlClient;
 using System.Data;
@@ -14,7 +11,7 @@ namespace DailyProcessingJobs.Data
 {
     class ReportRepository : SingletonBase<ReportRepository>
     {
-        private static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly string _connectionString;
         public ReportRepository()
@@ -31,23 +28,23 @@ namespace DailyProcessingJobs.Data
             );
         }
 
-        public Report GetReportData(string CommandText)
+        public Report GetReportData(string commandText)
         {
-            return ReportFromQuery(CommandType.Text, CommandText);
+            return ReportFromQuery(CommandType.Text, commandText);
         }
 
         protected Report ReportFromQuery(CommandType commandType, string commandText)
         {
-            SqlDataReader reader = null;
+            SqlDataReader reader;
 
-            Report report = new Report();
+            var report = new Report();
             try
             {
                 reader = SqlDataHelper.ExecuteReader(_connectionString, commandType, commandText);
             }
             catch (Exception ex)
             {
-                Log.ErrorFormat("Error in ReportFromQuery {0}", ex.ToString());
+                Log.ErrorFormat("Error in ReportFromQuery {0}", ex);
                 reader = null;
             }
 
@@ -61,7 +58,7 @@ namespace DailyProcessingJobs.Data
                 while (reader.Read())
                 {
                     // create a new activity report line
-                    ReportLine line = new ReportLine();
+                    var line = new ReportLine();
 
                     for (int iField = 0; iField < reader.FieldCount; iField++)
                     {

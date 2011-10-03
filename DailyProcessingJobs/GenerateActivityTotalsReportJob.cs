@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using CronPluginService.Framework.Plugin;
 using DailyProcessingJobs.Model;
 using log4net;
@@ -16,7 +13,7 @@ namespace DailyProcessingJobs
     [PluginMetaData(JobKey = "ActivityTotalsReport")]
     public class GenerateActivityTotalsReportJob : PluginBase
     {
-        private static ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
+        private static readonly ILog Log = LogManager.GetLogger(MethodBase.GetCurrentMethod().DeclaringType);
 
         private readonly string _reportPath;
         private readonly string _reportName;
@@ -24,28 +21,26 @@ namespace DailyProcessingJobs
         private readonly string _recipients;
 
         public GenerateActivityTotalsReportJob()
-            : base()
         {
         }
 
         public GenerateActivityTotalsReportJob(
-            string ReportPath, 
-            string ReportName, 
-            string Worksheet, 
-            string Recipients)
-            : base()
+            string reportPath, 
+            string reportName, 
+            string worksheet, 
+            string recipients)
         {
-            _reportPath = ReportPath;
-            _reportName = ReportName;
-            _worksheet = Worksheet;
-            _recipients = Recipients;
+            _reportPath = reportPath;
+            _reportName = reportName;
+            _worksheet = worksheet;
+            _recipients = recipients;
         }
 
         public override void Execute(PluginContext context)
         {
             try
             {
-                ReportGenerator generator = new ReportGenerator();
+                var generator = new ReportGenerator();
                 Report report = ReportRepository.Instance.GetAcvityTotalsReport();
 
                 Log.DebugFormat("Creating {0} at {1}", _reportName, _reportPath);

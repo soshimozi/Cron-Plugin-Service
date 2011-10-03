@@ -1,24 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace CronPluginService.Framework.Utility
+﻿namespace CronPluginService.Framework.Utility
 {
-    public class SingletonBase<T> where T : new()
+    public class SingletonBase<T> where T : class, new()
     {
-        private static T _instance = default(T);
+        private static T _instance;
 
         public static T Instance
         {
             get
             {
-                if (_instance == null)
-                {
-                    _instance = new T();
-                }
-
-                return _instance;
+                return _instance ?? (_instance = new T());
             }
         }
     }
